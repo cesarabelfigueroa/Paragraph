@@ -16,21 +16,19 @@ public class Application {
     Model model = new Model();
 
     public void connect() {
-        String[] columns = {"*"};
-        String[] conditions = {"true"};
+        model.connect();
+        System.out.println(this.isAValidUser("cfigue", "password"));
+    }
 
+    public boolean isAValidUser(String username, String password) {
+        String[] columns = {"*"};
+        String[] conditions = {"username = \"" + username + "\"", "password = \"" + password + "\""};
         ResultSet result = model.select("poa", "user", columns, conditions);
         try {
-            while(result.next()){
-                System.out.println(result.getString("username"));
-                System.out.println(result.getString("password"));
-                
-                
-            }
+            return result.first();
         } catch (SQLException ex) {
             Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        return false;
     }
-
 }
