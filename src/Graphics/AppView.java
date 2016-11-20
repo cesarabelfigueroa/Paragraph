@@ -19,6 +19,11 @@ import javax.swing.undo.UndoManager;
 import Core.RedoAction;
 import Core.UndoAction;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.Document;
@@ -26,14 +31,17 @@ import javax.swing.text.Element;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 
 public class AppView extends JFrame {
-
+    
     public AppView() {
         initComponents();
         renderPages();
     }
-
+    
     private void renderPages() {
         setWindowsConfiguration();
         setFonts();
@@ -41,19 +49,14 @@ public class AppView extends JFrame {
         configureListeners();
         this.setVisible(true);
     }
-
+    
     public void setWindowsConfiguration() {
         AppView.setDefaultLookAndFeelDecorated(false);
-        ImageIcon logoImage = new ImageIcon("./src/Icons/Microsoft_Word_2013_logo.svg.png");
-        Icon logoIcon = new ImageIcon(logoImage.getImage().getScaledInstance(logoSpace.getWidth(), logoSpace.getHeight(), Image.SCALE_DEFAULT));
-        logoSpace.setIcon(logoIcon);
-        this.repaint();
         this.setLocationRelativeTo(null);
-        setLocationByPlatform(true);
         this.pack();
         this.repaint();
     }
-
+    
     private void configureListeners() {
         UndoManager manager = new UndoManager();
         text_editor.getDocument().addUndoableEditListener(manager);
@@ -61,25 +64,24 @@ public class AppView extends JFrame {
         undo_button_editor.addActionListener(undoAction);
         Action redoAction = new RedoAction(manager);
         redo_button_editor.addActionListener(redoAction);
-
     }
-
+    
     public void setFonts() {
         GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
         DefaultComboBoxModel model = (DefaultComboBoxModel) this.fonts_combo.getModel();
-        Font[] fonts = e.getAllFonts(); // Get the fonts
+        Font[] fonts = e.getAllFonts();
         for (Font font : fonts) {
             model.addElement(font.getName());
         }
     }
-
+    
     public void setFontSizes() {
         DefaultComboBoxModel model = (DefaultComboBoxModel) this.font_size_combo.getModel();
         for (int i = 8; i <= 72; i += 3) {
             model.addElement(i);
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -99,39 +101,51 @@ public class AppView extends JFrame {
         font_size_combo = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
-        jButton4 = new javax.swing.JButton();
+        bold_button_editor = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton15 = new javax.swing.JButton();
-        jButton14 = new javax.swing.JButton();
+        underline_button_editor = new javax.swing.JButton();
+        size_minus_button = new javax.swing.JButton();
+        size_pluss_button = new javax.swing.JButton();
         undo_button_editor = new javax.swing.JButton();
         redo_button_editor = new javax.swing.JButton();
         port_papel_wrapper1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jButton5 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
-        jButton10 = new javax.swing.JButton();
+        center_button_align = new javax.swing.JButton();
+        justify_button_align = new javax.swing.JButton();
+        right_button_align = new javax.swing.JButton();
         left_button_align = new javax.swing.JButton();
-        left_button_align1 = new javax.swing.JButton();
-        left_button_align2 = new javax.swing.JButton();
-        left_button_align3 = new javax.swing.JButton();
+        color_editor_button = new javax.swing.JButton();
         menu_insert_wrapper1 = new javax.swing.JPanel();
         port_papel_wrapper2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jButton23 = new javax.swing.JButton();
-        jButton24 = new javax.swing.JButton();
+        export_word_button = new javax.swing.JButton();
         jButton25 = new javax.swing.JButton();
-        jButton26 = new javax.swing.JButton();
+        historial_editor_button = new javax.swing.JButton();
         port_papel_wrapper3 = new javax.swing.JPanel();
         jButton19 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jButton20 = new javax.swing.JButton();
         jButton21 = new javax.swing.JButton();
         jButton22 = new javax.swing.JButton();
+        editor_log_win = new javax.swing.JDialog();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
+        save_file_win = new javax.swing.JDialog();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
         button_editor = new javax.swing.JButton();
         button_files = new javax.swing.JButton();
         button_auth = new javax.swing.JButton();
-        logoSpace = new javax.swing.JLabel();
+        button_auth1 = new javax.swing.JButton();
 
         text_editor.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -217,26 +231,30 @@ public class AppView extends JFrame {
             }
         });
 
+        font_size_combo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                font_size_comboActionPerformed(evt);
+            }
+        });
+
         jLabel2.setFont(new java.awt.Font("Tekton Pro", 0, 18)); // NOI18N
         jLabel2.setText("Fuente");
 
         jToolBar1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true));
         jToolBar1.setRollover(true);
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Bold-52.png"))); // NOI18N
-        jButton4.setBorder(null);
-        jButton4.setFocusable(false);
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        bold_button_editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Bold-52.png"))); // NOI18N
+        bold_button_editor.setFocusable(false);
+        bold_button_editor.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        bold_button_editor.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        bold_button_editor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                bold_button_editorActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton4);
+        jToolBar1.add(bold_button_editor);
 
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Italic-48.png"))); // NOI18N
-        jButton7.setBorder(null);
         jButton7.setFocusable(false);
         jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -247,41 +265,38 @@ public class AppView extends JFrame {
         });
         jToolBar1.add(jButton7);
 
-        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Underline-52.png"))); // NOI18N
-        jButton8.setBorder(null);
-        jButton8.setFocusable(false);
-        jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        underline_button_editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Underline-52.png"))); // NOI18N
+        underline_button_editor.setFocusable(false);
+        underline_button_editor.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        underline_button_editor.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        underline_button_editor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
+                underline_button_editorActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton8);
+        jToolBar1.add(underline_button_editor);
 
-        jButton15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Decrease Font-52.png"))); // NOI18N
-        jButton15.setBorder(null);
-        jButton15.setFocusable(false);
-        jButton15.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton15.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton15.addActionListener(new java.awt.event.ActionListener() {
+        size_minus_button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Decrease Font-52.png"))); // NOI18N
+        size_minus_button.setFocusable(false);
+        size_minus_button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        size_minus_button.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        size_minus_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton15ActionPerformed(evt);
+                size_minus_buttonActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton15);
+        jToolBar1.add(size_minus_button);
 
-        jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Increase Font Filled-50.png"))); // NOI18N
-        jButton14.setBorder(null);
-        jButton14.setFocusable(false);
-        jButton14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton14.addActionListener(new java.awt.event.ActionListener() {
+        size_pluss_button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Increase Font Filled-50.png"))); // NOI18N
+        size_pluss_button.setFocusable(false);
+        size_pluss_button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        size_pluss_button.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        size_pluss_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton14ActionPerformed(evt);
+                size_pluss_buttonActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton14);
+        jToolBar1.add(size_pluss_button);
 
         undo_button_editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Undo-52.png"))); // NOI18N
         undo_button_editor.addActionListener(new java.awt.event.ActionListener() {
@@ -306,10 +321,10 @@ public class AppView extends JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(undo_button_editor)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(37, 37, 37)
                         .addComponent(redo_button_editor)
                         .addGap(18, 18, 18)
-                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel2)
@@ -332,7 +347,7 @@ public class AppView extends JFrame {
                     .addComponent(undo_button_editor, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
                     .addComponent(redo_button_editor, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
                     .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2))
         );
 
@@ -341,11 +356,26 @@ public class AppView extends JFrame {
         jLabel3.setFont(new java.awt.Font("Tekton Pro", 0, 18)); // NOI18N
         jLabel3.setText("Estilos");
 
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Align Center-48.png"))); // NOI18N
+        center_button_align.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Align Center-48.png"))); // NOI18N
+        center_button_align.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                center_button_alignActionPerformed(evt);
+            }
+        });
 
-        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Align Justify-50.png"))); // NOI18N
+        justify_button_align.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Align Justify-50.png"))); // NOI18N
+        justify_button_align.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                justify_button_alignActionPerformed(evt);
+            }
+        });
 
-        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Align Right-64.png"))); // NOI18N
+        right_button_align.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Align Right-64.png"))); // NOI18N
+        right_button_align.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                right_button_alignActionPerformed(evt);
+            }
+        });
 
         left_button_align.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Align Left-48.png"))); // NOI18N
         left_button_align.addActionListener(new java.awt.event.ActionListener() {
@@ -354,24 +384,10 @@ public class AppView extends JFrame {
             }
         });
 
-        left_button_align1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Text Color-50.png"))); // NOI18N
-        left_button_align1.addActionListener(new java.awt.event.ActionListener() {
+        color_editor_button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Fill Color-50.png"))); // NOI18N
+        color_editor_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                left_button_align1ActionPerformed(evt);
-            }
-        });
-
-        left_button_align2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Bulleted List-50.png"))); // NOI18N
-        left_button_align2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                left_button_align2ActionPerformed(evt);
-            }
-        });
-
-        left_button_align3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Numbered List-52.png"))); // NOI18N
-        left_button_align3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                left_button_align3ActionPerformed(evt);
+                color_editor_buttonActionPerformed(evt);
             }
         });
 
@@ -380,49 +396,40 @@ public class AppView extends JFrame {
         port_papel_wrapper1Layout.setHorizontalGroup(
             port_papel_wrapper1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(port_papel_wrapper1Layout.createSequentialGroup()
-                .addGap(207, 207, 207)
-                .addComponent(jLabel3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, port_papel_wrapper1Layout.createSequentialGroup()
-                .addContainerGap(21, Short.MAX_VALUE)
-                .addComponent(left_button_align1)
-                .addGap(10, 10, 10)
-                .addGroup(port_papel_wrapper1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(left_button_align3)
+                .addGroup(port_papel_wrapper1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(port_papel_wrapper1Layout.createSequentialGroup()
-                        .addComponent(left_button_align2)
-                        .addGap(2, 2, 2)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(port_papel_wrapper1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton5)
+                        .addGap(79, 79, 79)
+                        .addComponent(left_button_align))
                     .addGroup(port_papel_wrapper1Layout.createSequentialGroup()
-                        .addComponent(left_button_align)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton9)))
+                        .addContainerGap()
+                        .addComponent(color_editor_button)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19))
+                .addGroup(port_papel_wrapper1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addGroup(port_papel_wrapper1Layout.createSequentialGroup()
+                        .addComponent(justify_button_align)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(right_button_align, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(center_button_align))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
         port_papel_wrapper1Layout.setVerticalGroup(
             port_papel_wrapper1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(port_papel_wrapper1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(port_papel_wrapper1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(port_papel_wrapper1Layout.createSequentialGroup()
-                        .addGroup(port_papel_wrapper1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(left_button_align, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton9))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5))
-                    .addGroup(port_papel_wrapper1Layout.createSequentialGroup()
-                        .addGroup(port_papel_wrapper1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(left_button_align1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(left_button_align2, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(left_button_align3)))
+                .addGroup(port_papel_wrapper1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(right_button_align, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(left_button_align, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(justify_button_align, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel3))
+                .addGroup(port_papel_wrapper1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, port_papel_wrapper1Layout.createSequentialGroup()
+                        .addComponent(center_button_align)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, port_papel_wrapper1Layout.createSequentialGroup()
+                        .addComponent(color_editor_button)
+                        .addContainerGap())))
         );
 
         javax.swing.GroupLayout menu_insert_wrapperLayout = new javax.swing.GroupLayout(menu_insert_wrapper);
@@ -436,7 +443,7 @@ public class AppView extends JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(port_papel_wrapper1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addContainerGap(111, Short.MAX_VALUE))
         );
         menu_insert_wrapperLayout.setVerticalGroup(
             menu_insert_wrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -444,7 +451,7 @@ public class AppView extends JFrame {
                 .addContainerGap()
                 .addGroup(menu_insert_wrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(port_papel_wrapper, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+                    .addComponent(port_papel_wrapper, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
                     .addComponent(port_papel_wrapper1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -460,17 +467,27 @@ public class AppView extends JFrame {
         jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/XML-50.png"))); // NOI18N
         jButton23.setToolTipText("");
 
-        jButton24.setForeground(new java.awt.Color(255, 255, 255));
-        jButton24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/MS Word Filled-50.png"))); // NOI18N
-        jButton24.setToolTipText("");
+        export_word_button.setForeground(new java.awt.Color(255, 255, 255));
+        export_word_button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/MS Word Filled-50.png"))); // NOI18N
+        export_word_button.setToolTipText("");
+        export_word_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                export_word_buttonActionPerformed(evt);
+            }
+        });
 
         jButton25.setForeground(new java.awt.Color(255, 255, 255));
         jButton25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Refresh-52.png"))); // NOI18N
         jButton25.setToolTipText("");
 
-        jButton26.setForeground(new java.awt.Color(255, 255, 255));
-        jButton26.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Clock Filled-50.png"))); // NOI18N
-        jButton26.setToolTipText("");
+        historial_editor_button.setForeground(new java.awt.Color(255, 255, 255));
+        historial_editor_button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Clock Filled-50.png"))); // NOI18N
+        historial_editor_button.setToolTipText("");
+        historial_editor_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                historial_editor_buttonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout port_papel_wrapper2Layout = new javax.swing.GroupLayout(port_papel_wrapper2);
         port_papel_wrapper2.setLayout(port_papel_wrapper2Layout);
@@ -485,11 +502,11 @@ public class AppView extends JFrame {
                         .addContainerGap()
                         .addComponent(jButton23)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton24)
+                        .addComponent(export_word_button)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton25)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton26)))
+                        .addComponent(historial_editor_button)))
                 .addContainerGap(11, Short.MAX_VALUE))
         );
         port_papel_wrapper2Layout.setVerticalGroup(
@@ -498,9 +515,9 @@ public class AppView extends JFrame {
                 .addContainerGap()
                 .addGroup(port_papel_wrapper2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton23, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton24, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(export_word_button, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton25, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton26, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(historial_editor_button, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel4)
                 .addGap(19, 19, 19))
@@ -518,6 +535,11 @@ public class AppView extends JFrame {
         jButton20.setForeground(new java.awt.Color(255, 255, 255));
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Save Filled-50.png"))); // NOI18N
         jButton20.setToolTipText("");
+        jButton20.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton20ActionPerformed(evt);
+            }
+        });
 
         jButton21.setForeground(new java.awt.Color(255, 255, 255));
         jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Open Folder-50.png"))); // NOI18N
@@ -606,9 +628,125 @@ public class AppView extends JFrame {
                 .addContainerGap())
         );
 
+        jLabel7.setFont(new java.awt.Font("Tekton Pro", 0, 18)); // NOI18N
+        jLabel7.setText("Historial de Acciones");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null}
+            },
+            new String [] {
+                "Acción", "Usuario", "Fecha"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(jTable1);
+
+        jButton1.setText("Aceptar");
+
+        javax.swing.GroupLayout editor_log_winLayout = new javax.swing.GroupLayout(editor_log_win.getContentPane());
+        editor_log_win.getContentPane().setLayout(editor_log_winLayout);
+        editor_log_winLayout.setHorizontalGroup(
+            editor_log_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(editor_log_winLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 719, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, editor_log_winLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(290, 290, 290))
+            .addGroup(editor_log_winLayout.createSequentialGroup()
+                .addGap(273, 273, 273)
+                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        editor_log_winLayout.setVerticalGroup(
+            editor_log_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, editor_log_winLayout.createSequentialGroup()
+                .addGap(41, 41, 41)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31))
+        );
+
+        jButton2.setText("Aceptar");
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel6.setText("Salvar Archivos");
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel8.setText("Nombre");
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel9.setText("Directorio");
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel10.setText("Fecha");
+
+        javax.swing.GroupLayout save_file_winLayout = new javax.swing.GroupLayout(save_file_win.getContentPane());
+        save_file_win.getContentPane().setLayout(save_file_winLayout);
+        save_file_winLayout.setHorizontalGroup(
+            save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(save_file_winLayout.createSequentialGroup()
+                .addGroup(save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(save_file_winLayout.createSequentialGroup()
+                        .addGap(337, 337, 337)
+                        .addComponent(jLabel6))
+                    .addGroup(save_file_winLayout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addGroup(save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(save_file_winLayout.createSequentialGroup()
+                                .addGroup(save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel10))
+                                .addGap(165, 165, 165)
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jTextField1)
+                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 749, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel9))))
+                .addContainerGap(41, Short.MAX_VALUE))
+        );
+        save_file_winLayout.setVerticalGroup(
+            save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(save_file_winLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel6)
+                .addGap(16, 16, 16)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(21, 21, 21)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(jLabel10)
+                .addGroup(save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(save_file_winLayout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(62, 62, 62))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, save_file_winLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20))))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(204, 204, 204));
-        setPreferredSize(new java.awt.Dimension(1342, 780));
 
         button_editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/editor.png"))); // NOI18N
         button_editor.setText("Editor");
@@ -624,34 +762,34 @@ public class AppView extends JFrame {
         button_auth.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/user.png"))); // NOI18N
         button_auth.setText("Login/Logout");
 
+        button_auth1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Send File-50.png"))); // NOI18N
+        button_auth1.setText("Send");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(21, 21, 21)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(button_auth1, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(button_auth, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(button_files, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(button_editor, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
-                .addComponent(logoSpace, javax.swing.GroupLayout.PREFERRED_SIZE, 675, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(950, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(305, Short.MAX_VALUE)
+                .addContainerGap(448, Short.MAX_VALUE)
                 .addComponent(button_editor, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(button_files, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(button_auth1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(button_auth, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(logoSpace, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(48, 48, 48))
         );
 
         pack();
@@ -661,28 +799,27 @@ public class AppView extends JFrame {
         editorForm.pack();
         editorForm.setLocationRelativeTo(this);
         editorForm.setVisible(true);
-
     }//GEN-LAST:event_button_editorActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+    private void bold_button_editorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bold_button_editorActionPerformed
+        configurateStyle("bold");
+    }//GEN-LAST:event_bold_button_editorActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
+        configurateStyle("italic");
     }//GEN-LAST:event_jButton7ActionPerformed
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton8ActionPerformed
+    private void underline_button_editorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_underline_button_editorActionPerformed
+        configurateStyle("underline");
+    }//GEN-LAST:event_underline_button_editorActionPerformed
 
-    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton14ActionPerformed
+    private void size_pluss_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_size_pluss_buttonActionPerformed
+        configurateStyle("size+");
+    }//GEN-LAST:event_size_pluss_buttonActionPerformed
 
-    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton15ActionPerformed
+    private void size_minus_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_size_minus_buttonActionPerformed
+        configurateStyle("size-");
+    }//GEN-LAST:event_size_minus_buttonActionPerformed
 
     private void button_pasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_pasteActionPerformed
         text_editor.paste();
@@ -706,20 +843,8 @@ public class AppView extends JFrame {
     }//GEN-LAST:event_fonts_comboItemStateChanged
 
     private void left_button_alignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_left_button_alignActionPerformed
-
+        setAlign("left");
     }//GEN-LAST:event_left_button_alignActionPerformed
-
-    private void left_button_align1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_left_button_align1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_left_button_align1ActionPerformed
-
-    private void left_button_align2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_left_button_align2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_left_button_align2ActionPerformed
-
-    private void left_button_align3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_left_button_align3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_left_button_align3ActionPerformed
 
     private void undo_button_editorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undo_button_editorActionPerformed
 
@@ -730,38 +855,137 @@ public class AppView extends JFrame {
     }//GEN-LAST:event_redo_button_editorActionPerformed
 
     private void fonts_comboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fonts_comboActionPerformed
-        String fontFamily = (String) this.fonts_combo.getSelectedItem();
-        doc = text_editor.getStyledDocument();
-        int j = 0, position = 0;
-        for (int i = text_editor.getSelectionStart(); i < text_editor.getSelectionEnd(); i++) {
-            position = text_editor.getSelectionStart() + j;
-            Element element = doc.getCharacterElement(position);
+        configurateStyle("fontFamily");
+    }//GEN-LAST:event_fonts_comboActionPerformed
+
+    private void historial_editor_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_historial_editor_buttonActionPerformed
+        editor_log_win.pack();
+        editor_log_win.setLocationRelativeTo(this);
+        editor_log_win.setVisible(true);
+    }//GEN-LAST:event_historial_editor_buttonActionPerformed
+
+    private void font_size_comboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_font_size_comboActionPerformed
+        configurateStyle("size");
+    }//GEN-LAST:event_font_size_comboActionPerformed
+
+    private void justify_button_alignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_justify_button_alignActionPerformed
+        setAlign("justify");
+    }//GEN-LAST:event_justify_button_alignActionPerformed
+
+    private void right_button_alignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_right_button_alignActionPerformed
+        setAlign("right");
+    }//GEN-LAST:event_right_button_alignActionPerformed
+
+    private void center_button_alignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_center_button_alignActionPerformed
+        setAlign("center");
+    }//GEN-LAST:event_center_button_alignActionPerformed
+
+    private void color_editor_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_color_editor_buttonActionPerformed
+        configurateStyle("color");
+    }//GEN-LAST:event_color_editor_buttonActionPerformed
+
+    private void export_word_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_export_word_buttonActionPerformed
+        XWPFDocument document = new XWPFDocument();
+        FileOutputStream out;
+        try {
+            out = new FileOutputStream(
+                    new File("createparagraph.docx"));
+            XWPFParagraph paragraph = document.createParagraph();
+            XWPFRun run = paragraph.createRun();
+            run.setText(text_editor.getText());
+            document.write(out);
+            out.close();
+            System.out.println("createparagraph.docx written successfully");
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(AppView.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AppView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_export_word_buttonActionPerformed
+
+    private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
+        save_file_win.pack();
+        save_file_win.setLocationRelativeTo(editorForm);
+        save_file_win.setVisible(true);
+    }//GEN-LAST:event_jButton20ActionPerformed
+    
+    private void configurateStyle(String action) {
+        doc = this.text_editor.getStyledDocument();
+        if (action.equals("color")) {
+            colour = JColorChooser.showDialog(this, "Color", Color.blue);
+        }
+        int j = 0, posicion = 0;
+        for (int i = this.text_editor.getSelectionStart(); i < this.text_editor.getSelectionEnd(); i++) {
+            posicion = this.text_editor.getSelectionStart() + j;
+            Element element = doc.getCharacterElement(posicion);
             AttributeSet as = element.getAttributes();
-            colour = StyleConstants.getForeground(as);
+            if (!action.equals("color")) {
+                colour = StyleConstants.getForeground(as);
+            }
             bold = StyleConstants.isBold(as);
             italics = StyleConstants.isItalic(as);
             underline = StyleConstants.isUnderline(as);
             size = StyleConstants.getFontSize(as);
-            Edit(position);
+            fontLetter = StyleConstants.getFontFamily(as);
+            if (action.equals("fontFamily")) {
+                this.fontLetter = (String) this.fonts_combo.getSelectedItem();
+            } else if (action.equals("bold")) {
+                bold = !bold;
+            } else if (action.equals("italic")) {
+                italics = !italics;
+            } else if (action.equals("underline")) {
+                underline = !underline;
+            } else if (action.equals("size")) {
+                size = (int) this.font_size_combo.getSelectedItem();
+            } else if (action.equals("size+")) {
+                size++;
+            } else if (action.equals("size-")) {
+                if (size > 6) {
+                    size--;
+                }
+            }
+            Edit(posicion);
             j++;
         }
-    }//GEN-LAST:event_fonts_comboActionPerformed
-
+    }
+    
     private void Edit(int posicion) {
-        doc = text_editor.getStyledDocument();
-        Style estilo = this.text_editor.addStyle("miEstilo", null);
+        doc = this.text_editor.getStyledDocument();
+        Style estilo = this.text_editor.addStyle("style", null);
         StyleConstants.setForeground(estilo, colour);
         StyleConstants.setFontFamily(estilo, fontLetter);
         StyleConstants.setFontSize(estilo, size);
         StyleConstants.setBold(estilo, bold);
         StyleConstants.setItalic(estilo, italics);
         StyleConstants.setUnderline(estilo, underline);
-        doc.setCharacterAttributes(posicion, 1, this.text_editor.getStyle("miEstilo"), true);
+        doc.setCharacterAttributes(posicion, 1, this.text_editor.getStyle("style"), true);
         documento = this.text_editor.getStyledDocument();
     }
-
+    
+    public void setAlign(String action) {
+        doc = this.text_editor.getStyledDocument();
+        Style estilo = this.text_editor.addStyle("style", null);
+        switch (action) {
+            case "center":
+                StyleConstants.setAlignment(estilo, StyleConstants.ALIGN_CENTER);
+                break;
+            case "justify":
+                StyleConstants.setAlignment(estilo, StyleConstants.ALIGN_JUSTIFIED);
+                break;
+            case "left":
+                StyleConstants.setAlignment(estilo, StyleConstants.ALIGN_LEFT);
+                break;
+            case "right":
+                StyleConstants.setAlignment(estilo, StyleConstants.ALIGN_RIGHT);
+                break;
+            default:
+                break;
+        }
+        doc.setParagraphAttributes(this.text_editor.getSelectionStart(), this.text_editor.getSelectionEnd() - this.text_editor.getSelectionStart(), this.text_editor.getStyle("style"), true);
+    }
+    
     public static void main(String args[]) {
-
+        
         try {
             UIManager.setLookAndFeel(new SyntheticaAluOxideLookAndFeel());
         } catch (Exception e) {
@@ -775,44 +999,51 @@ public class AppView extends JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bold_button_editor;
     private javax.swing.JButton button_auth;
+    private javax.swing.JButton button_auth1;
     private javax.swing.JButton button_copy;
     private javax.swing.JButton button_cut;
     private javax.swing.JButton button_editor;
     private javax.swing.JButton button_files;
     private javax.swing.JButton button_paste;
+    private javax.swing.JButton center_button_align;
+    private javax.swing.JButton color_editor_button;
     private javax.swing.JFrame editorForm;
+    private javax.swing.JDialog editor_log_win;
+    private javax.swing.JButton export_word_button;
     private javax.swing.JComboBox<String> font_size_combo;
     private javax.swing.JComboBox<String> fonts_combo;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton14;
-    private javax.swing.JButton jButton15;
+    private javax.swing.JButton historial_editor_button;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton19;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton21;
     private javax.swing.JButton jButton22;
     private javax.swing.JButton jButton23;
-    private javax.swing.JButton jButton24;
     private javax.swing.JButton jButton25;
-    private javax.swing.JButton jButton26;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
+    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JButton justify_button_align;
     private javax.swing.JButton left_button_align;
-    private javax.swing.JButton left_button_align1;
-    private javax.swing.JButton left_button_align2;
-    private javax.swing.JButton left_button_align3;
-    private javax.swing.JLabel logoSpace;
     private javax.swing.JPanel menu_insert_wrapper;
     private javax.swing.JPanel menu_insert_wrapper1;
     private javax.swing.JTabbedPane menu_sidebar;
@@ -821,12 +1052,17 @@ public class AppView extends JFrame {
     private javax.swing.JPanel port_papel_wrapper2;
     private javax.swing.JPanel port_papel_wrapper3;
     private javax.swing.JButton redo_button_editor;
+    private javax.swing.JButton right_button_align;
+    private javax.swing.JDialog save_file_win;
+    private javax.swing.JButton size_minus_button;
+    private javax.swing.JButton size_pluss_button;
     private javax.swing.JTextPane text_editor;
+    private javax.swing.JButton underline_button_editor;
     private javax.swing.JButton undo_button_editor;
     // End of variables declaration//GEN-END:variables
     StyledDocument doc;
     Document documento;
-    private String fontLetter = "Monospaced";
+    private String fontLetter = "";
     private boolean bold = false;
     private boolean italics = false;
     private boolean underline = false;
@@ -839,5 +1075,4 @@ public class AppView extends JFrame {
     private boolean left;
     private boolean right;
     private boolean justified;
-    private boolean nuevo = true;
 }
