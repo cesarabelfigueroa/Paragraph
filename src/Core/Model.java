@@ -18,6 +18,7 @@ public class Model {
         String url = "jdbc:mysql://localhost/" + db;
         String user = "root";
         String pass = "camiseta";
+    
 
         try {
             Class.forName("org.gjt.mm.mysql.Driver");

@@ -17,18 +17,19 @@ public class Application {
 
     public void connect() {
         model.connect();
-        System.out.println(this.isAValidUser("cfigue", "password"));
     }
 
-    public boolean isAValidUser(String username, String password) {
+    public String isAValidUser(String username, String password) {
         String[] columns = {"*"};
         String[] conditions = {"username = \"" + username + "\"", "password = \"" + password + "\""};
         ResultSet result = model.select("poa", "user", columns, conditions);
         try {
-            return result.first();
+            if (result.first()) {
+                return result.getString("id");
+            }
         } catch (SQLException ex) {
             Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
+        return "";
     }
 }

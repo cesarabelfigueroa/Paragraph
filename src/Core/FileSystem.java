@@ -10,6 +10,7 @@ import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
@@ -19,7 +20,9 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.namespace.QName;
@@ -34,18 +37,21 @@ public class FileSystem {
     private String date;
     private String directory;
     private int autor;
-    private byte[] content;
+    private String block1 = "";
+    private String block2 = "";
+    private String block3 = "";
+    private String block4 = "";
+    private String block5 = "";
 
     public FileSystem() {
 
     }
 
-    public FileSystem(String name, String date, String directory, int autor, byte[] content) {
+    public FileSystem(String name, String date, String directory, int autor) {
         this.name = name;
         this.date = date;
         this.directory = directory;
         this.autor = autor;
-        this.content = content;
     }
 
     @XmlElement
@@ -84,16 +90,7 @@ public class FileSystem {
         this.directory = directory;
     }
 
-    @XmlElement
-    public byte[] getContent() {
-        return content;
-    }
-
-    public void setContent(byte[] content) {
-        this.content = content;
-    }
-
-    public String SerielizarXml() {
+    public String SerialXml() {
         StringWriter writer = new StringWriter();
         JAXBContext context;
         try {
@@ -108,7 +105,7 @@ public class FileSystem {
         }
     }
 
-    public FileSystem DeserielizarXml(String Serial) {
+    public FileSystem DeserialXml(String Serial) {
         StringWriter writer = new StringWriter();
         FileSystem A1 = new FileSystem();
         JAXBContext context;
@@ -122,4 +119,50 @@ public class FileSystem {
             return A1;
         }
     }
+
+    @XmlElement
+    public String getBlock1() {
+        return block1;
+    }
+
+    public void setBlock1(String block1) {
+        this.block1 = block1;
+    }
+
+    @XmlElement
+    public String getBlock2() {
+        return block2;
+    }
+
+    public void setBlock2(String block2) {
+        this.block2 = block2;
+    }
+
+    @XmlElement
+    public String getBlock3() {
+        return block3;
+    }
+
+    public void setBlock3(String block3) {
+        this.block3 = block3;
+    }
+
+    @XmlElement
+    public String getBlock4() {
+        return block4;
+    }
+
+    public void setBlock4(String block4) {
+        this.block4 = block4;
+    }
+
+    @XmlElement
+    public String getBlock5() {
+        return block5;
+    }
+
+    public void setBlock5(String block5) {
+        this.block5 = block5;
+    }
+
 }
