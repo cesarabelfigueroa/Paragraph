@@ -148,7 +148,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Paste-50.png"/>
                         </Property>
-                        <Property name="toolTipText" type="java.lang.String" value=""/>
+                        <Property name="toolTipText" type="java.lang.String" value="Pegar"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_pasteActionPerformed"/>
@@ -159,6 +159,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Cut-50.png"/>
                         </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Cortar"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_cutActionPerformed"/>
@@ -169,6 +170,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Copy-50.png"/>
                         </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Copiar"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_copyActionPerformed"/>
@@ -253,6 +255,7 @@
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="0"/>
                         </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Tipo de Letra"/>
                       </Properties>
                       <Events>
                         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="fonts_comboItemStateChanged"/>
@@ -302,6 +305,7 @@
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/Icons/Bold-52.png"/>
                             </Property>
+                            <Property name="toolTipText" type="java.lang.String" value="Negrita"/>
                             <Property name="focusable" type="boolean" value="false"/>
                             <Property name="horizontalTextPosition" type="int" value="0"/>
                             <Property name="verticalTextPosition" type="int" value="3"/>
@@ -315,6 +319,7 @@
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/Icons/Italic-48.png"/>
                             </Property>
+                            <Property name="toolTipText" type="java.lang.String" value="Cursiva"/>
                             <Property name="focusable" type="boolean" value="false"/>
                             <Property name="horizontalTextPosition" type="int" value="0"/>
                             <Property name="verticalTextPosition" type="int" value="3"/>
@@ -328,6 +333,7 @@
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/Icons/Underline-52.png"/>
                             </Property>
+                            <Property name="toolTipText" type="java.lang.String" value="Subrayado"/>
                             <Property name="focusable" type="boolean" value="false"/>
                             <Property name="horizontalTextPosition" type="int" value="0"/>
                             <Property name="verticalTextPosition" type="int" value="3"/>
@@ -341,6 +347,7 @@
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/Icons/Decrease Font-52.png"/>
                             </Property>
+                            <Property name="toolTipText" type="java.lang.String" value="Reducir"/>
                             <Property name="focusable" type="boolean" value="false"/>
                             <Property name="horizontalTextPosition" type="int" value="0"/>
                             <Property name="verticalTextPosition" type="int" value="3"/>
@@ -354,6 +361,7 @@
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/Icons/Increase Font Filled-50.png"/>
                             </Property>
+                            <Property name="toolTipText" type="java.lang.String" value="Agrandarr"/>
                             <Property name="focusable" type="boolean" value="false"/>
                             <Property name="horizontalTextPosition" type="int" value="0"/>
                             <Property name="verticalTextPosition" type="int" value="3"/>
@@ -369,6 +377,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Undo-52.png"/>
                         </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Atr&#xe1;s"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="undo_button_editorActionPerformed"/>
@@ -379,6 +388,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Redo-52.png"/>
                         </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Adelante"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="redo_button_editorActionPerformed"/>
@@ -462,6 +472,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Align Center-48.png"/>
                         </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Centrar"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="center_button_alignActionPerformed"/>
@@ -472,6 +483,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Align Justify-50.png"/>
                         </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Justificar"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="justify_button_alignActionPerformed"/>
@@ -482,6 +494,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Align Right-64.png"/>
                         </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Derecha"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="right_button_alignActionPerformed"/>
@@ -492,6 +505,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Align Left-48.png"/>
                         </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Izquierda"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="left_button_alignActionPerformed"/>
@@ -502,6 +516,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Fill Color-50.png"/>
                         </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Colorear"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="color_editor_buttonActionPerformed"/>
@@ -615,7 +630,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/XML-50.png"/>
                         </Property>
-                        <Property name="toolTipText" type="java.lang.String" value=""/>
+                        <Property name="toolTipText" type="java.lang.String" value="Exportar a XML"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton23ActionPerformed"/>
@@ -629,7 +644,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/MS Word Filled-50.png"/>
                         </Property>
-                        <Property name="toolTipText" type="java.lang.String" value=""/>
+                        <Property name="toolTipText" type="java.lang.String" value="Exportar a RTF"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="export_word_buttonActionPerformed"/>
@@ -643,7 +658,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Refresh-52.png"/>
                         </Property>
-                        <Property name="toolTipText" type="java.lang.String" value=""/>
+                        <Property name="toolTipText" type="java.lang.String" value="Actualizar"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JButton" name="historial_editor_button">
@@ -654,7 +669,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Clock Filled-50.png"/>
                         </Property>
-                        <Property name="toolTipText" type="java.lang.String" value=""/>
+                        <Property name="toolTipText" type="java.lang.String" value="Historial de Acciones"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="historial_editor_buttonActionPerformed"/>
@@ -725,7 +740,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Print-50.png"/>
                         </Property>
-                        <Property name="toolTipText" type="java.lang.String" value=""/>
+                        <Property name="toolTipText" type="java.lang.String" value="Imprimir"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel5">
@@ -744,7 +759,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Save Filled-50.png"/>
                         </Property>
-                        <Property name="toolTipText" type="java.lang.String" value=""/>
+                        <Property name="toolTipText" type="java.lang.String" value="Crear"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton20ActionPerformed"/>
@@ -758,8 +773,11 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Open Folder-50.png"/>
                         </Property>
-                        <Property name="toolTipText" type="java.lang.String" value=""/>
+                        <Property name="toolTipText" type="java.lang.String" value="Abrir"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton21ActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="jButton22">
                       <Properties>
@@ -769,7 +787,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/Icons/Send File-50.png"/>
                         </Property>
-                        <Property name="toolTipText" type="java.lang.String" value=""/>
+                        <Property name="toolTipText" type="java.lang.String" value="Enviar"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -864,15 +882,15 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jDateChooser1" alignment="0" min="-2" pref="131" max="-2" attributes="0"/>
+                                      <Component id="file_save_date" alignment="0" min="-2" pref="131" max="-2" attributes="0"/>
                                       <Component id="jLabel10" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace min="-2" pref="165" max="-2" attributes="0"/>
-                                  <Component id="jButton2" min="-2" pref="144" max="-2" attributes="0"/>
+                                  <Component id="file_save_action" min="-2" pref="144" max="-2" attributes="0"/>
                               </Group>
                               <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jTextField1" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="jTextField2" alignment="0" min="-2" pref="749" max="-2" attributes="0"/>
+                                  <Component id="file_save_name" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="file_save_directory" alignment="0" min="-2" pref="749" max="-2" attributes="0"/>
                               </Group>
                               <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -895,22 +913,22 @@
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jTextField1" min="-2" pref="44" max="-2" attributes="0"/>
+                  <Component id="file_save_name" min="-2" pref="44" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                   <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jTextField2" min="-2" pref="44" max="-2" attributes="0"/>
+                  <Component id="file_save_directory" min="-2" pref="44" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                   <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-                          <Component id="jDateChooser1" min="-2" pref="41" max="-2" attributes="0"/>
+                          <Component id="file_save_date" min="-2" pref="41" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButton2" min="-2" pref="52" max="-2" attributes="0"/>
+                          <Component id="file_save_action" min="-2" pref="52" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -919,16 +937,16 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JTextField" name="jTextField1">
+        <Component class="javax.swing.JTextField" name="file_save_name">
         </Component>
-        <Component class="javax.swing.JTextField" name="jTextField2">
+        <Component class="javax.swing.JTextField" name="file_save_directory">
         </Component>
-        <Component class="javax.swing.JButton" name="jButton2">
+        <Component class="javax.swing.JButton" name="file_save_action">
           <Properties>
             <Property name="text" type="java.lang.String" value="Aceptar"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="file_save_actionActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel6">
@@ -939,7 +957,7 @@
             <Property name="text" type="java.lang.String" value="Salvar Archivos"/>
           </Properties>
         </Component>
-        <Component class="com.toedter.calendar.JDateChooser" name="jDateChooser1">
+        <Component class="com.toedter.calendar.JDateChooser" name="file_save_date">
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel8">
           <Properties>
@@ -1195,6 +1213,7 @@
           <Image iconType="3" name="/Icons/editor.png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Editor"/>
+        <Property name="toolTipText" type="java.lang.String" value="Editor de Texto"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_editorActionPerformed"/>
@@ -1205,7 +1224,8 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/Icons/files.png"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Files"/>
+        <Property name="text" type="java.lang.String" value="Archivos"/>
+        <Property name="toolTipText" type="java.lang.String" value="Gestionar Archivos"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="button_auth">
@@ -1224,7 +1244,8 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/Icons/Send File-50.png"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Send"/>
+        <Property name="text" type="java.lang.String" value="Enviar"/>
+        <Property name="toolTipText" type="java.lang.String" value="Enviar Archivos"/>
       </Properties>
     </Component>
   </SubComponents>

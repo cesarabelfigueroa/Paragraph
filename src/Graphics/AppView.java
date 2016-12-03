@@ -1,7 +1,7 @@
 package Graphics;
 
-import Core.Application;
 import Core.FileSystem;
+import Core.Model;
 import Core.Paragraph;
 import de.javasoft.plaf.synthetica.SyntheticaAluOxideLookAndFeel;
 import java.awt.Color;
@@ -20,7 +20,11 @@ import javax.swing.Action;
 import javax.swing.UIManager;
 import javax.swing.undo.UndoManager;
 import Core.RedoAction;
+import Core.ThreadRelay;
 import Core.UndoAction;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -29,6 +33,9 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,9 +53,11 @@ import javax.swing.text.rtf.RTFEditorKit;
 
 public class AppView extends JFrame {
 
-    Application app = new Application();
+    public Model modelAction = new Model();
+    XStream xStream = getXstreamObject();
     private RTFEditorKit kitrtf;
-    int idUser = -1;
+    public int idUser = -1;
+    public int idOpenFile = 4;
 
     public AppView() {
         initComponents();
@@ -156,11 +165,11 @@ public class AppView extends JFrame {
         jTable1 = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         save_file_win = new javax.swing.JDialog();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
+        file_save_name = new javax.swing.JTextField();
+        file_save_directory = new javax.swing.JTextField();
+        file_save_action = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        file_save_date = new com.toedter.calendar.JDateChooser();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -194,7 +203,7 @@ public class AppView extends JFrame {
 
         button_paste.setForeground(new java.awt.Color(255, 255, 255));
         button_paste.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Paste-50.png"))); // NOI18N
-        button_paste.setToolTipText("");
+        button_paste.setToolTipText("Pegar");
         button_paste.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button_pasteActionPerformed(evt);
@@ -202,6 +211,7 @@ public class AppView extends JFrame {
         });
 
         button_cut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Cut-50.png"))); // NOI18N
+        button_cut.setToolTipText("Cortar");
         button_cut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button_cutActionPerformed(evt);
@@ -209,6 +219,7 @@ public class AppView extends JFrame {
         });
 
         button_copy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Copy-50.png"))); // NOI18N
+        button_copy.setToolTipText("Copiar");
         button_copy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button_copyActionPerformed(evt);
@@ -254,6 +265,7 @@ public class AppView extends JFrame {
         jPanel1.setForeground(new java.awt.Color(255, 255, 255));
         jPanel1.setFont(new java.awt.Font("Tekton Pro Ext", 1, 14)); // NOI18N
 
+        fonts_combo.setToolTipText("Tipo de Letra");
         fonts_combo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 fonts_comboItemStateChanged(evt);
@@ -278,6 +290,7 @@ public class AppView extends JFrame {
         jToolBar1.setRollover(true);
 
         bold_button_editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Bold-52.png"))); // NOI18N
+        bold_button_editor.setToolTipText("Negrita");
         bold_button_editor.setFocusable(false);
         bold_button_editor.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         bold_button_editor.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -289,6 +302,7 @@ public class AppView extends JFrame {
         jToolBar1.add(bold_button_editor);
 
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Italic-48.png"))); // NOI18N
+        jButton7.setToolTipText("Cursiva");
         jButton7.setFocusable(false);
         jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -300,6 +314,7 @@ public class AppView extends JFrame {
         jToolBar1.add(jButton7);
 
         underline_button_editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Underline-52.png"))); // NOI18N
+        underline_button_editor.setToolTipText("Subrayado");
         underline_button_editor.setFocusable(false);
         underline_button_editor.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         underline_button_editor.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -311,6 +326,7 @@ public class AppView extends JFrame {
         jToolBar1.add(underline_button_editor);
 
         size_minus_button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Decrease Font-52.png"))); // NOI18N
+        size_minus_button.setToolTipText("Reducir");
         size_minus_button.setFocusable(false);
         size_minus_button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         size_minus_button.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -322,6 +338,7 @@ public class AppView extends JFrame {
         jToolBar1.add(size_minus_button);
 
         size_pluss_button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Increase Font Filled-50.png"))); // NOI18N
+        size_pluss_button.setToolTipText("Agrandarr");
         size_pluss_button.setFocusable(false);
         size_pluss_button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         size_pluss_button.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -333,6 +350,7 @@ public class AppView extends JFrame {
         jToolBar1.add(size_pluss_button);
 
         undo_button_editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Undo-52.png"))); // NOI18N
+        undo_button_editor.setToolTipText("Atrás");
         undo_button_editor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 undo_button_editorActionPerformed(evt);
@@ -340,6 +358,7 @@ public class AppView extends JFrame {
         });
 
         redo_button_editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Redo-52.png"))); // NOI18N
+        redo_button_editor.setToolTipText("Adelante");
         redo_button_editor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 redo_button_editorActionPerformed(evt);
@@ -391,6 +410,7 @@ public class AppView extends JFrame {
         jLabel3.setText("Estilos");
 
         center_button_align.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Align Center-48.png"))); // NOI18N
+        center_button_align.setToolTipText("Centrar");
         center_button_align.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 center_button_alignActionPerformed(evt);
@@ -398,6 +418,7 @@ public class AppView extends JFrame {
         });
 
         justify_button_align.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Align Justify-50.png"))); // NOI18N
+        justify_button_align.setToolTipText("Justificar");
         justify_button_align.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 justify_button_alignActionPerformed(evt);
@@ -405,6 +426,7 @@ public class AppView extends JFrame {
         });
 
         right_button_align.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Align Right-64.png"))); // NOI18N
+        right_button_align.setToolTipText("Derecha");
         right_button_align.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 right_button_alignActionPerformed(evt);
@@ -412,6 +434,7 @@ public class AppView extends JFrame {
         });
 
         left_button_align.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Align Left-48.png"))); // NOI18N
+        left_button_align.setToolTipText("Izquierda");
         left_button_align.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 left_button_alignActionPerformed(evt);
@@ -419,6 +442,7 @@ public class AppView extends JFrame {
         });
 
         color_editor_button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Fill Color-50.png"))); // NOI18N
+        color_editor_button.setToolTipText("Colorear");
         color_editor_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 color_editor_buttonActionPerformed(evt);
@@ -485,7 +509,7 @@ public class AppView extends JFrame {
                 .addContainerGap()
                 .addGroup(menu_insert_wrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(port_papel_wrapper, javax.swing.GroupLayout.PREFERRED_SIZE, 190, Short.MAX_VALUE)
+                    .addComponent(port_papel_wrapper, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
                     .addComponent(port_papel_wrapper1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -499,7 +523,7 @@ public class AppView extends JFrame {
 
         jButton23.setForeground(new java.awt.Color(255, 255, 255));
         jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/XML-50.png"))); // NOI18N
-        jButton23.setToolTipText("");
+        jButton23.setToolTipText("Exportar a XML");
         jButton23.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton23ActionPerformed(evt);
@@ -508,7 +532,7 @@ public class AppView extends JFrame {
 
         export_word_button.setForeground(new java.awt.Color(255, 255, 255));
         export_word_button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/MS Word Filled-50.png"))); // NOI18N
-        export_word_button.setToolTipText("");
+        export_word_button.setToolTipText("Exportar a RTF");
         export_word_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 export_word_buttonActionPerformed(evt);
@@ -517,11 +541,11 @@ public class AppView extends JFrame {
 
         jButton25.setForeground(new java.awt.Color(255, 255, 255));
         jButton25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Refresh-52.png"))); // NOI18N
-        jButton25.setToolTipText("");
+        jButton25.setToolTipText("Actualizar");
 
         historial_editor_button.setForeground(new java.awt.Color(255, 255, 255));
         historial_editor_button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Clock Filled-50.png"))); // NOI18N
-        historial_editor_button.setToolTipText("");
+        historial_editor_button.setToolTipText("Historial de Acciones");
         historial_editor_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 historial_editor_buttonActionPerformed(evt);
@@ -566,14 +590,14 @@ public class AppView extends JFrame {
 
         jButton19.setForeground(new java.awt.Color(255, 255, 255));
         jButton19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Print-50.png"))); // NOI18N
-        jButton19.setToolTipText("");
+        jButton19.setToolTipText("Imprimir");
 
         jLabel5.setFont(new java.awt.Font("Tekton Pro", 0, 18)); // NOI18N
         jLabel5.setText("Acciones");
 
         jButton20.setForeground(new java.awt.Color(255, 255, 255));
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Save Filled-50.png"))); // NOI18N
-        jButton20.setToolTipText("");
+        jButton20.setToolTipText("Crear");
         jButton20.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton20ActionPerformed(evt);
@@ -582,11 +606,16 @@ public class AppView extends JFrame {
 
         jButton21.setForeground(new java.awt.Color(255, 255, 255));
         jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Open Folder-50.png"))); // NOI18N
-        jButton21.setToolTipText("");
+        jButton21.setToolTipText("Abrir");
+        jButton21.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton21ActionPerformed(evt);
+            }
+        });
 
         jButton22.setForeground(new java.awt.Color(255, 255, 255));
         jButton22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Send File-50.png"))); // NOI18N
-        jButton22.setToolTipText("");
+        jButton22.setToolTipText("Enviar");
 
         javax.swing.GroupLayout port_papel_wrapper3Layout = new javax.swing.GroupLayout(port_papel_wrapper3);
         port_papel_wrapper3.setLayout(port_papel_wrapper3Layout);
@@ -719,10 +748,10 @@ public class AppView extends JFrame {
                 .addGap(31, 31, 31))
         );
 
-        jButton2.setText("Aceptar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        file_save_action.setText("Aceptar");
+        file_save_action.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                file_save_actionActionPerformed(evt);
             }
         });
 
@@ -749,13 +778,13 @@ public class AppView extends JFrame {
                         .addGroup(save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(save_file_winLayout.createSequentialGroup()
                                 .addGroup(save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(file_save_date, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel10))
                                 .addGap(165, 165, 165)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(file_save_action, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jTextField1)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 749, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(file_save_name)
+                                .addComponent(file_save_directory, javax.swing.GroupLayout.PREFERRED_SIZE, 749, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel8)
                             .addComponent(jLabel9)))
                     .addGroup(save_file_winLayout.createSequentialGroup()
@@ -771,21 +800,21 @@ public class AppView extends JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(file_save_name, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21)
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(file_save_directory, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addComponent(jLabel10)
                 .addGroup(save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(save_file_winLayout.createSequentialGroup()
                         .addGap(4, 4, 4)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(file_save_date, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(62, 62, 62))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, save_file_winLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(file_save_action, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(20, 20, 20))))
         );
 
@@ -903,6 +932,7 @@ public class AppView extends JFrame {
 
         button_editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/editor.png"))); // NOI18N
         button_editor.setText("Editor");
+        button_editor.setToolTipText("Editor de Texto");
         button_editor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button_editorActionPerformed(evt);
@@ -910,7 +940,8 @@ public class AppView extends JFrame {
         });
 
         button_files.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/files.png"))); // NOI18N
-        button_files.setText("Files");
+        button_files.setText("Archivos");
+        button_files.setToolTipText("Gestionar Archivos");
 
         button_auth.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/user.png"))); // NOI18N
         button_auth.setText("Login");
@@ -921,7 +952,8 @@ public class AppView extends JFrame {
         });
 
         button_send.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Send File-50.png"))); // NOI18N
-        button_send.setText("Send");
+        button_send.setText("Enviar");
+        button_send.setToolTipText("Enviar Archivos");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -954,6 +986,9 @@ public class AppView extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void button_editorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_editorActionPerformed
+        this.setVisible(false);
+        Thread thread = new Thread(new ThreadRelay(this));
+        thread.start();
         editorForm.pack();
         editorForm.setLocationRelativeTo(this);
         editorForm.setVisible(true);
@@ -1073,8 +1108,7 @@ public class AppView extends JFrame {
         try {
             ByteArrayOutputStream str = new ByteArrayOutputStream();
             RTFEditorKit kitrtf = new RTFEditorKit();
-            kitrtf.write(str, text_editor.getDocument(), 0, text_editor.getDocument().getLength());
-
+            kitrtf.write(str, text_editor.getDocument(), 0, text_editor.getDocument().getLength() - 1);
             return str.toString();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(AppView.class.getName()).log(Level.SEVERE, null, ex);
@@ -1083,15 +1117,18 @@ public class AppView extends JFrame {
         } catch (BadLocationException ex) {
             Logger.getLogger(AppView.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return "";
     }
 
 
     private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-        save_file_win.pack();
-        save_file_win.setLocationRelativeTo(editorForm);
-        save_file_win.setVisible(true);
+        if (this.idOpenFile == -1) {
+            save_file_win.pack();
+            save_file_win.setLocationRelativeTo(editorForm);
+            save_file_win.setVisible(true);
+        } else {
+            this.autoSaveFile();
+        }
     }//GEN-LAST:event_jButton20ActionPerformed
 
     private void ttf_passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ttf_passwordActionPerformed
@@ -1107,9 +1144,19 @@ public class AppView extends JFrame {
     private void loggin_button_actionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loggin_button_actionActionPerformed
         String username = this.ttf_username.getText();
         String password = new String(this.ttf_password.getPassword());
-        String id = app.isAValidUser(username, password);
-        if (!id.equals("")) {
-            idUser = Integer.parseInt(id);
+        String[] columns = {"*"};
+        String[] conditions = {"username = \"" + username + "\"", "password = \"" + password + "\""};
+        ResultSet result = modelAction.select("poa", "user", columns, conditions);
+        int id = 0;
+        try {
+            if (result.first()) {
+                id = result.getInt("id");
+            }
+        } catch (SQLException ex) {
+
+        }
+        if (id != 0) {
+            idUser = id;
             this.button_editor.setEnabled(true);
             this.button_files.setEnabled(true);
             this.button_send.setEnabled(true);
@@ -1117,41 +1164,166 @@ public class AppView extends JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Información incorrecta.");
         }
+        modelAction.close();
     }//GEN-LAST:event_loggin_button_actionActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void file_save_actionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_file_save_actionActionPerformed
+        if (idOpenFile == -1) {
+            FileSystem file = getNewFile();
+            String name = file.getName();
+            String directory = file.getDirectory();
+            String xml = xStream.toXML(file);
+            String[] columns = {"*"};
+            String[] conditions = {"name = \"" + name + "\""};
+            ResultSet result = modelAction.select("poa", "file", columns, conditions);
+            int id = 0;
+            int user = 0;
+            try {
+                if (result.first()) {
+                    id = result.getInt("id");
+                    user = result.getInt("autor");
+                    idOpenFile = id;
+                }
+            } catch (SQLException ex) {
+            }
+            modelAction.close();
+            if (id == 0) {
+                String[] values = {name, directory, "" + this.idUser, xml};
+                String[] columnsFile = {"name", "directory", "autor", "content"};
+                modelAction.insert("poa", "file", columnsFile, values);
+                modelAction.close();
+                int line = file.getParagraphs().size() - 1;
+                String[] columnsAccess = {"file_id", "user_id", "line"};
+                String[] valuesAcess = {"" + idOpenFile, "" + idUser, "" + line};
+                modelAction.insert("poa", "access", columnsAccess, valuesAcess);
+                modelAction.close();
+            } else {
+                JOptionPane.showMessageDialog(editorForm, "El archivo ya existe, no puede ser creado.");
+            }
+        }
+    }//GEN-LAST:event_file_save_actionActionPerformed
+
+    public void autoSaveFile() {
+        if (this.idOpenFile != -1) {
+            ArrayList<Paragraph> currents = getContent();
+            int editing = -1;
+            String[] columns = {"*"};
+            String[] conditions = {"id = \"" + idOpenFile + "\""};
+            ResultSet result = modelAction.select("poa", "file", columns, conditions);
+            String content = "";
+            try {
+                if (result.first()) {
+                    content = result.getString("content");
+                }
+            } catch (SQLException ex) {
+            }
+            modelAction.close();
+            if (!content.equals("")) {
+                FileSystem contentFile = (FileSystem) xStream.fromXML(content);
+                ArrayList<Paragraph> Paragraphs = contentFile.getParagraphs();
+                String xml = xStream.toXML(contentFile);
+                String[] values = {xml};
+                String[] columnsFile = {"content"};
+                String[] conditionsFile = {"id = " + idOpenFile};
+                modelAction.update("poa", "file", columnsFile, values, conditionsFile);
+                modelAction.close();
+            }
+        }
+    }
+
+    public void autoReadFile() {
+        if (this.idOpenFile != -1) {
+            int change = -1;
+            String[] columns = {"*"};
+            String[] conditions = {"id = \"" + idOpenFile + "\""};
+            ResultSet result = modelAction.select("poa", "file", columns, conditions);
+            String content = "";
+            try {
+                if (result.first()) {
+                    content = result.getString("content");
+                }
+            } catch (SQLException ex) {
+            }
+            modelAction.close();
+            FileSystem currentFileBase = (FileSystem) xStream.fromXML(content);
+            ArrayList<Paragraph> paragraphBase = currentFileBase.getParagraphs();
+            if (!content.equals("")) {
+                String resultRTF = transformToRTF(paragraphBase);
+                this.text_editor.setText(resultRTF);
+            }
+        }
+    }
+
+    private String transformToRTF(ArrayList<Paragraph> Paragraph) {
+        ArrayList<String> contents = new ArrayList();
+        for (int i = 0; i < Paragraph.size(); i++) {
+            contents.add(Paragraph.get(i).getContent());
+        }
+        String rtf = "";
+        for (int i = 0; i < contents.size(); i++) {
+            if (!(contents.get(i).equals("/n") || contents.get(i).equals("") || contents.get(i).equals(" "))) {
+                rtf += contents.get(i);
+            }
+            if (i < contents.size() - 1) {
+                if (!(rtf.equals("/n") || rtf.equals("") || rtf.equals(" "))) {
+                    rtf += "/par ";
+                }
+            }
+        }
+        String result = rtf.replace('/', '\\');
+        return result;
+    }
+
+    private FileSystem getNewFile() {
+        String name = file_save_name.getText();
+        String directory = file_save_directory.getText();
+        FileSystem file = new FileSystem(name, directory, this.idUser);
+        ArrayList<Paragraph> paragraph = getContent();
+        file.setParagraphs(paragraph);
+        return file;
+    }
+
+    private ArrayList<Paragraph> getContent() {
+        ArrayList<Paragraph> paragraphsContent = new ArrayList();
         String content = getContentText();
         String scape = "\\\\";
         content = content.replace('\\', '/');
-        String[] paragraphs = content.split("/par");
+        String[] paragraphs = content.split("/par ");
         for (int i = 0; i < paragraphs.length; i++) {
-            paragraphs[i] = paragraphs[i].replace("\n", "");
+            paragraphsContent.add(new Paragraph(paragraphs[i]));
         }
+        System.out.println(paragraphsContent);
+        return paragraphsContent;
+    }
 
-        FileSystem file = new FileSystem("test", new Date().toString(), "test", 1);
-        file.setBlock1(paragraphs[0]);
-        file.setBlock2(paragraphs[1]);
-        file.setBlock3(paragraphs[2]);
-        file.setBlock4(paragraphs[3]);
-        file.setBlock5(paragraphs[5]);
-        System.out.println(file.SerialXml());
-
-    }//GEN-LAST:event_jButton2ActionPerformed
 
     private void export_button_to_rtfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_export_button_to_rtfActionPerformed
         this.exportRTF();
     }//GEN-LAST:event_export_button_to_rtfActionPerformed
 
     private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
-        FileSystem file = new FileSystem("test", new Date().toString(), "test", 1);
-        file.setBlock1("fndbxc,nmdbdmvz");
-        file.setBlock2("fndbxc,nmdbdmvz");
-        file.setBlock3("fndbxc,nmdbdmvz");
-        file.setBlock4("fndbxc,nmdbdmvz");
-        file.setBlock5("fndbxc,nmdbdmvz");
-        System.out.println(file.SerialXml());
-
+        FileSystem file = new FileSystem("test", "test", 1);
+        for (int i = 0; i < 10; i++) {
+            file.getParagraphs().add(new Paragraph("hahaha"));
+        }
     }//GEN-LAST:event_jButton23ActionPerformed
+
+    private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
+        autoSaveFile();
+    }//GEN-LAST:event_jButton21ActionPerformed
+
+    private static XStream getXstreamObject() {
+        XStream xstream = new XStream(new DomDriver()); // DomDriver and StaxDriver instances also can be used with constructor
+        xstream
+                .alias("file", FileSystem.class
+                ); // this will remove the Country class package name
+        xstream
+                .alias("block", Paragraph.class
+                ); // this will remove the State class package na
+        xstream
+                .addImplicitCollection(FileSystem.class, "paragraphs"); // don't want all states inside .
+        return xstream;
+    }
 
     private void configurateStyle(String action) {
         doc = this.text_editor.getStyledDocument();
@@ -1257,19 +1429,21 @@ public class AppView extends JFrame {
     private javax.swing.JDialog editor_log_win;
     private javax.swing.JButton export_button_to_rtf;
     private javax.swing.JButton export_word_button;
+    private javax.swing.JButton file_save_action;
+    private com.toedter.calendar.JDateChooser file_save_date;
+    private javax.swing.JTextField file_save_directory;
+    private javax.swing.JTextField file_save_name;
     private javax.swing.JComboBox<String> font_size_combo;
     private javax.swing.JComboBox<String> fonts_combo;
     private javax.swing.JButton historial_editor_button;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton19;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton21;
     private javax.swing.JButton jButton22;
     private javax.swing.JButton jButton23;
     private javax.swing.JButton jButton25;
     private javax.swing.JButton jButton7;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1289,8 +1463,6 @@ public class AppView extends JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JButton justify_button_align;
     private javax.swing.JButton left_button_align;

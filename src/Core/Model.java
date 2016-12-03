@@ -18,7 +18,6 @@ public class Model {
         String url = "jdbc:mysql://localhost/" + db;
         String user = "root";
         String pass = "camiseta";
-    
 
         try {
             Class.forName("org.gjt.mm.mysql.Driver");
@@ -67,13 +66,20 @@ public class Model {
         return response;
     }
 
-    public boolean insert(String schema, String table, String[] values) {
+    public boolean insert(String schema, String table, String[] columns, String[] values) {
         boolean response = false;
-        String query = "INSERT INTO " + schema + "." + table + " VALUES(";
+        String query = "INSERT INTO " + schema + "." + table + "(";
+        for (int i = 0; i < columns.length; i++) {
+            query += columns[i];
+            if (i < values.length - 1) {
+                query += ", ";
+            }
+        }
+        query += ")VALUES(";
         for (int i = 0; i < values.length; i++) {
             if (values[i] != null) {
                 query += "'" + values[i] + "'";
-            }else{
+            } else {
                 query += "NULL";
             }
             if (i < values.length - 1) {
@@ -92,8 +98,8 @@ public class Model {
         return response;
     }
 
-    public ResultSet update(String schema, String table, String[] columns, String[] values, String[] conditions) {
-        ResultSet response = null;
+    public int update(String schema, String table, String[] columns, String[] values, String[] conditions) {
+        int response = 0;
         String query = "UPDATE " + schema + "." + table + " SET ";
         for (int i = 0; i < columns.length; i++) {
             query += columns[i] + " = '" + values[i] + "'";
@@ -113,7 +119,7 @@ public class Model {
         query += ";";
         try {
             Statement sentence = connect().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-            response = sentence.executeQuery(query);
+            response = sentence.executeUpdate(query);
         } catch (SQLException ex) {
             Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex);
         }
