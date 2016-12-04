@@ -41,6 +41,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -57,7 +58,7 @@ public class AppView extends JFrame {
     XStream xStream = getXstreamObject();
     private RTFEditorKit kitrtf;
     public int idUser = -1;
-    public int idOpenFile = 4;
+    public int idOpenFile = -1;
 
     public AppView() {
         initComponents();
@@ -157,7 +158,7 @@ public class AppView extends JFrame {
         jButton19 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jButton20 = new javax.swing.JButton();
-        jButton21 = new javax.swing.JButton();
+        open_file_show = new javax.swing.JButton();
         jButton22 = new javax.swing.JButton();
         editor_log_win = new javax.swing.JDialog();
         jLabel7 = new javax.swing.JLabel();
@@ -169,10 +170,10 @@ public class AppView extends JFrame {
         file_save_directory = new javax.swing.JTextField();
         file_save_action = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
-        file_save_date = new com.toedter.calendar.JDateChooser();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
+        file_size_save = new javax.swing.JSpinner();
         log_window = new javax.swing.JDialog();
         ttf_username = new javax.swing.JTextField();
         loggin_button_action = new javax.swing.JButton();
@@ -185,10 +186,40 @@ public class AppView extends JFrame {
         export_button_to_rtf = new javax.swing.JButton();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
+        open_file_selector = new javax.swing.JDialog();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        files_selection_list = new javax.swing.JComboBox<>();
+        jButton2 = new javax.swing.JButton();
+        permission_window = new javax.swing.JDialog();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        my_files_permission = new javax.swing.JTable();
+        jLabel20 = new javax.swing.JLabel();
+        user_permission_selector = new javax.swing.JComboBox<>();
+        jLabel21 = new javax.swing.JLabel();
+        read_permission_value = new javax.swing.JCheckBox();
+        write_permission_value = new javax.swing.JCheckBox();
+        jButton3 = new javax.swing.JButton();
+        send_file_window = new javax.swing.JDialog();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        files_selection_list1 = new javax.swing.JComboBox<>();
+        jButton4 = new javax.swing.JButton();
         button_editor = new javax.swing.JButton();
         button_files = new javax.swing.JButton();
         button_auth = new javax.swing.JButton();
         button_send = new javax.swing.JButton();
+
+        editorForm.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentHidden(java.awt.event.ComponentEvent evt) {
+                editorFormComponentHidden(evt);
+            }
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                editorFormComponentShown(evt);
+            }
+        });
 
         text_editor.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -604,12 +635,12 @@ public class AppView extends JFrame {
             }
         });
 
-        jButton21.setForeground(new java.awt.Color(255, 255, 255));
-        jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Open Folder-50.png"))); // NOI18N
-        jButton21.setToolTipText("Abrir");
-        jButton21.addActionListener(new java.awt.event.ActionListener() {
+        open_file_show.setForeground(new java.awt.Color(255, 255, 255));
+        open_file_show.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Open Folder-50.png"))); // NOI18N
+        open_file_show.setToolTipText("Abrir");
+        open_file_show.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton21ActionPerformed(evt);
+                open_file_showActionPerformed(evt);
             }
         });
 
@@ -633,7 +664,7 @@ public class AppView extends JFrame {
                     .addGroup(port_papel_wrapper3Layout.createSequentialGroup()
                         .addComponent(jButton20)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton21)
+                        .addComponent(open_file_show)
                         .addGap(0, 80, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -644,7 +675,7 @@ public class AppView extends JFrame {
                 .addGroup(port_papel_wrapper3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButton20, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton19, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton21, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(open_file_show, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addGroup(port_papel_wrapper3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -765,7 +796,9 @@ public class AppView extends JFrame {
         jLabel9.setText("Directorio");
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel10.setText("Fecha");
+        jLabel10.setText("Tamaño");
+
+        file_size_save.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
 
         javax.swing.GroupLayout save_file_winLayout = new javax.swing.GroupLayout(save_file_win.getContentPane());
         save_file_win.getContentPane().setLayout(save_file_winLayout);
@@ -776,12 +809,6 @@ public class AppView extends JFrame {
                     .addGroup(save_file_winLayout.createSequentialGroup()
                         .addGap(30, 30, 30)
                         .addGroup(save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(save_file_winLayout.createSequentialGroup()
-                                .addGroup(save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(file_save_date, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel10))
-                                .addGap(165, 165, 165)
-                                .addComponent(file_save_action, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(file_save_name)
                                 .addComponent(file_save_directory, javax.swing.GroupLayout.PREFERRED_SIZE, 749, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -789,13 +816,21 @@ public class AppView extends JFrame {
                             .addComponent(jLabel9)))
                     .addGroup(save_file_winLayout.createSequentialGroup()
                         .addGap(353, 353, 353)
-                        .addComponent(jLabel6)))
+                        .addComponent(jLabel6))
+                    .addGroup(save_file_winLayout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(jLabel10)
+                        .addGap(28, 28, 28)
+                        .addComponent(file_size_save, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(save_file_winLayout.createSequentialGroup()
+                        .addGap(341, 341, 341)
+                        .addComponent(file_save_action, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(41, Short.MAX_VALUE))
         );
         save_file_winLayout.setVerticalGroup(
             save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(save_file_winLayout.createSequentialGroup()
-                .addContainerGap(16, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel8)
@@ -806,16 +841,12 @@ public class AppView extends JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(file_save_directory, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
-                .addComponent(jLabel10)
                 .addGroup(save_file_winLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(save_file_winLayout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addComponent(file_save_date, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(62, 62, 62))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, save_file_winLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(file_save_action, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20))))
+                    .addComponent(jLabel10)
+                    .addComponent(file_size_save, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(50, 50, 50)
+                .addComponent(file_save_action, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(56, 56, 56))
         );
 
         loggin_button_action.setText("Aceptar");
@@ -927,6 +958,205 @@ public class AppView extends JFrame {
                 .addGap(60, 60, 60))
         );
 
+        jLabel16.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel16.setText("Seleccionar Archivo");
+
+        jLabel17.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel17.setText("Lista");
+
+        jButton2.setText("Abrir");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout open_file_selectorLayout = new javax.swing.GroupLayout(open_file_selector.getContentPane());
+        open_file_selector.getContentPane().setLayout(open_file_selectorLayout);
+        open_file_selectorLayout.setHorizontalGroup(
+            open_file_selectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(open_file_selectorLayout.createSequentialGroup()
+                .addGap(64, 64, 64)
+                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 216, Short.MAX_VALUE)
+                .addComponent(files_selection_list, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25))
+            .addGroup(open_file_selectorLayout.createSequentialGroup()
+                .addGroup(open_file_selectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(open_file_selectorLayout.createSequentialGroup()
+                        .addGap(189, 189, 189)
+                        .addComponent(jLabel16))
+                    .addGroup(open_file_selectorLayout.createSequentialGroup()
+                        .addGap(204, 204, 204)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        open_file_selectorLayout.setVerticalGroup(
+            open_file_selectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(open_file_selectorLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(jLabel16)
+                .addGap(40, 40, 40)
+                .addGroup(open_file_selectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(files_selection_list, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28))
+        );
+
+        jLabel18.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel18.setText("Asignar Permisos");
+
+        jLabel19.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel19.setText("Archivo");
+
+        my_files_permission.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Id", "Nombre", "Directorio", "Tamaño"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        my_files_permission.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        my_files_permission.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                my_files_permissionMouseClicked(evt);
+            }
+        });
+        my_files_permission.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                my_files_permissionPropertyChange(evt);
+            }
+        });
+        jScrollPane3.setViewportView(my_files_permission);
+
+        jLabel20.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel20.setText("Usuario");
+
+        user_permission_selector.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                user_permission_selectorActionPerformed(evt);
+            }
+        });
+
+        jLabel21.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel21.setText("Permiso");
+
+        read_permission_value.setText("Leer");
+
+        write_permission_value.setText("Escribir");
+
+        jButton3.setText("Enviar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout permission_windowLayout = new javax.swing.GroupLayout(permission_window.getContentPane());
+        permission_window.getContentPane().setLayout(permission_windowLayout);
+        permission_windowLayout.setHorizontalGroup(
+            permission_windowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(permission_windowLayout.createSequentialGroup()
+                .addGroup(permission_windowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(permission_windowLayout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addGroup(permission_windowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel21)
+                            .addComponent(jLabel20)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 818, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel19)
+                            .addComponent(user_permission_selector, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(permission_windowLayout.createSequentialGroup()
+                        .addGap(92, 92, 92)
+                        .addComponent(read_permission_value)
+                        .addGap(31, 31, 31)
+                        .addComponent(write_permission_value)))
+                .addContainerGap(59, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, permission_windowLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(permission_windowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, permission_windowLayout.createSequentialGroup()
+                        .addComponent(jLabel18)
+                        .addGap(408, 408, 408))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, permission_windowLayout.createSequentialGroup()
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(400, 400, 400))))
+        );
+        permission_windowLayout.setVerticalGroup(
+            permission_windowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(permission_windowLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jLabel18)
+                .addGap(50, 50, 50)
+                .addComponent(jLabel19)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(jLabel20)
+                .addGap(18, 18, 18)
+                .addComponent(user_permission_selector, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(jLabel21)
+                .addGap(18, 18, 18)
+                .addGroup(permission_windowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(read_permission_value)
+                    .addComponent(write_permission_value))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(21, 21, 21))
+        );
+
+        jLabel22.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel22.setText("Enviar Archivo");
+
+        jLabel23.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel23.setText("Lista");
+
+        jButton4.setText("Enviar");
+
+        javax.swing.GroupLayout send_file_windowLayout = new javax.swing.GroupLayout(send_file_window.getContentPane());
+        send_file_window.getContentPane().setLayout(send_file_windowLayout);
+        send_file_windowLayout.setHorizontalGroup(
+            send_file_windowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(send_file_windowLayout.createSequentialGroup()
+                .addGap(173, 173, 173)
+                .addGroup(send_file_windowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel22))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, send_file_windowLayout.createSequentialGroup()
+                .addGap(34, 34, 34)
+                .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 186, Short.MAX_VALUE)
+                .addComponent(files_selection_list1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28))
+        );
+        send_file_windowLayout.setVerticalGroup(
+            send_file_windowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(send_file_windowLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jLabel22)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                .addGroup(send_file_windowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(files_selection_list1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(35, 35, 35)
+                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(204, 204, 204));
 
@@ -942,6 +1172,11 @@ public class AppView extends JFrame {
         button_files.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/files.png"))); // NOI18N
         button_files.setText("Archivos");
         button_files.setToolTipText("Gestionar Archivos");
+        button_files.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_filesActionPerformed(evt);
+            }
+        });
 
         button_auth.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/user.png"))); // NOI18N
         button_auth.setText("Login");
@@ -954,6 +1189,11 @@ public class AppView extends JFrame {
         button_send.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Send File-50.png"))); // NOI18N
         button_send.setText("Enviar");
         button_send.setToolTipText("Enviar Archivos");
+        button_send.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_sendActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -987,8 +1227,8 @@ public class AppView extends JFrame {
 
     private void button_editorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_editorActionPerformed
         this.setVisible(false);
-        Thread thread = new Thread(new ThreadRelay(this));
-        thread.start();
+        //Thread thread = new Thread(new ThreadRelay(this));
+        //thread.start();
         editorForm.pack();
         editorForm.setLocationRelativeTo(this);
         editorForm.setVisible(true);
@@ -1120,7 +1360,6 @@ public class AppView extends JFrame {
         return "";
     }
 
-
     private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
         if (this.idOpenFile == -1) {
             save_file_win.pack();
@@ -1157,6 +1396,7 @@ public class AppView extends JFrame {
         }
         if (id != 0) {
             idUser = id;
+            this.idOpenFile = -1;
             this.button_editor.setEnabled(true);
             this.button_files.setEnabled(true);
             this.button_send.setEnabled(true);
@@ -1172,6 +1412,7 @@ public class AppView extends JFrame {
             FileSystem file = getNewFile();
             String name = file.getName();
             String directory = file.getDirectory();
+            int size = file.getSize();
             String xml = xStream.toXML(file);
             String[] columns = {"*"};
             String[] conditions = {"name = \"" + name + "\""};
@@ -1188,14 +1429,9 @@ public class AppView extends JFrame {
             }
             modelAction.close();
             if (id == 0) {
-                String[] values = {name, directory, "" + this.idUser, xml};
-                String[] columnsFile = {"name", "directory", "autor", "content"};
+                String[] values = {name, directory, "" + this.idUser, xml, "" + size};
+                String[] columnsFile = {"name", "directory", "autor", "content", "size"};
                 modelAction.insert("poa", "file", columnsFile, values);
-                modelAction.close();
-                int line = file.getParagraphs().size() - 1;
-                String[] columnsAccess = {"file_id", "user_id", "line"};
-                String[] valuesAcess = {"" + idOpenFile, "" + idUser, "" + line};
-                modelAction.insert("poa", "access", columnsAccess, valuesAcess);
                 modelAction.close();
             } else {
                 JOptionPane.showMessageDialog(editorForm, "El archivo ya existe, no puede ser creado.");
@@ -1206,7 +1442,6 @@ public class AppView extends JFrame {
     public void autoSaveFile() {
         if (this.idOpenFile != -1) {
             ArrayList<Paragraph> currents = getContent();
-            int editing = -1;
             String[] columns = {"*"};
             String[] conditions = {"id = \"" + idOpenFile + "\""};
             ResultSet result = modelAction.select("poa", "file", columns, conditions);
@@ -1220,7 +1455,8 @@ public class AppView extends JFrame {
             modelAction.close();
             if (!content.equals("")) {
                 FileSystem contentFile = (FileSystem) xStream.fromXML(content);
-                ArrayList<Paragraph> Paragraphs = contentFile.getParagraphs();
+                ArrayList<Paragraph> Paragraphs = getContent();
+                contentFile.setParagraphs(Paragraphs);
                 String xml = xStream.toXML(contentFile);
                 String[] values = {xml};
                 String[] columnsFile = {"content"};
@@ -1233,7 +1469,6 @@ public class AppView extends JFrame {
 
     public void autoReadFile() {
         if (this.idOpenFile != -1) {
-            int change = -1;
             String[] columns = {"*"};
             String[] conditions = {"id = \"" + idOpenFile + "\""};
             ResultSet result = modelAction.select("poa", "file", columns, conditions);
@@ -1277,7 +1512,8 @@ public class AppView extends JFrame {
     private FileSystem getNewFile() {
         String name = file_save_name.getText();
         String directory = file_save_directory.getText();
-        FileSystem file = new FileSystem(name, directory, this.idUser);
+        int size = (int) file_size_save.getValue();
+        FileSystem file = new FileSystem(name, directory, this.idUser, size);
         ArrayList<Paragraph> paragraph = getContent();
         file.setParagraphs(paragraph);
         return file;
@@ -1292,36 +1528,308 @@ public class AppView extends JFrame {
         for (int i = 0; i < paragraphs.length; i++) {
             paragraphsContent.add(new Paragraph(paragraphs[i]));
         }
-        System.out.println(paragraphsContent);
         return paragraphsContent;
     }
-
 
     private void export_button_to_rtfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_export_button_to_rtfActionPerformed
         this.exportRTF();
     }//GEN-LAST:event_export_button_to_rtfActionPerformed
 
     private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
-        FileSystem file = new FileSystem("test", "test", 1);
-        for (int i = 0; i < 10; i++) {
-            file.getParagraphs().add(new Paragraph("hahaha"));
-        }
+
     }//GEN-LAST:event_jButton23ActionPerformed
 
-    private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
-        autoSaveFile();
-    }//GEN-LAST:event_jButton21ActionPerformed
+    private void open_file_showActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_open_file_showActionPerformed
+        files_selection_list.setModel(new DefaultComboBoxModel());
+        DefaultComboBoxModel model = (DefaultComboBoxModel) files_selection_list.getModel();
+        String[] conditions = {"autor = " + idUser};
+        String[] columns = {"*"};
+        ResultSet result = modelAction.select("poa", "file", columns, conditions);
+        try {
+            if (result.first()) {
+                model.addElement(result.getString("name"));
+                while (result.next()) {
+                    model.addElement(result.getString("name"));
+                }
+            }
+        } catch (SQLException ex) {
+        }
+
+        modelAction.close();
+        result = modelAction.customQuery("SELECT poa.file.name\n"
+                + "FROM poa.permission \n"
+                + "            Inner Join poa.user ON poa.permission.user_id = poa.user.id\n"
+                + "            Inner Join poa.file ON poa.permission.file_id = poa.file.id\n"
+                + "where poa.permission.user_id = " + this.idUser + " and poa.permission.description like 'R'");
+        try {
+            if (result.first()) {
+                model.addElement(result.getString("name"));
+                while (result.next()) {
+                    model.addElement(result.getString("name"));
+                }
+            }
+        } catch (SQLException ex) {
+        }
+        modelAction.close();
+        open_file_selector.pack();
+        open_file_selector.setLocationRelativeTo(editorForm);
+        open_file_selector.setVisible(true);
+    }//GEN-LAST:event_open_file_showActionPerformed
+
+    private void editorFormComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_editorFormComponentShown
+        if (!editorForm.isVisible()) {
+            this.setVisible(true);
+        }
+    }//GEN-LAST:event_editorFormComponentShown
+
+    private void editorFormComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_editorFormComponentHidden
+        if (!editorForm.isVisible()) {
+            this.setVisible(true);
+            int confirm = JOptionPane.showConfirmDialog(editorForm, "¿Desea guardar su archivo?", "", JOptionPane.YES_NO_OPTION);
+            if (confirm == 0) {
+                if (idOpenFile == -1) {
+                    save_file_win.pack();
+                    save_file_win.setLocationRelativeTo(editorForm);
+                    save_file_win.setVisible(true);
+
+                } else {
+                    this.autoSaveFile();
+                }
+            }
+
+            this.text_editor.setText("");
+            this.idOpenFile = -1;
+        }
+    }//GEN-LAST:event_editorFormComponentHidden
+
+    private void button_filesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_filesActionPerformed
+        DefaultTableModel model = (DefaultTableModel) my_files_permission.getModel();
+        model.setRowCount(0);
+        String[] conditions = {"autor = " + idUser};
+        String[] columns = {"*"};
+        ResultSet result = modelAction.select("poa", "file", columns, conditions);
+        try {
+            if (result.first()) {
+                String id = result.getString("id");
+                String name = result.getString("name");
+                String directory = result.getString("directory");
+                String size = result.getString("size");
+                Object[] row = {id, name, directory, size};
+                model.addRow(row);
+                while (result.next()) {
+                    id = result.getString("id");
+                    name = result.getString("name");
+                    directory = result.getString("directory");
+                    size = result.getString("size");
+                    Object[] row2 = {id, name, directory, size};
+                    model.addRow(row2);
+                }
+            }
+        } catch (SQLException ex) {
+        }
+        modelAction.close();
+        user_permission_selector.setModel(new DefaultComboBoxModel());
+        DefaultComboBoxModel modelActual = (DefaultComboBoxModel) user_permission_selector.getModel();
+        String[] conditionsUser = {"1 = 1"};
+        String[] columnsUser = {"*"};
+        result = modelAction.select("poa", "user", columnsUser, conditionsUser);
+        try {
+            if (result.first()) {
+                if (result.getInt("id") != idUser) {
+                    modelActual.addElement(result.getString("firstname") + " " + result.getString("lastname"));
+                }
+                while (result.next()) {
+                    if (result.getInt("id") != idUser) {
+                        modelActual.addElement(result.getString("firstname") + " " + result.getString("lastname"));
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+        }
+        modelAction.close();
+        this.permission_window.pack();
+        this.permission_window.setLocationRelativeTo(this);
+        this.permission_window.setVisible(true);
+    }//GEN-LAST:event_button_filesActionPerformed
+
+    private void button_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_sendActionPerformed
+        this.send_file_window.pack();
+        this.send_file_window.setLocationRelativeTo(this);
+        this.send_file_window.setVisible(true);
+    }//GEN-LAST:event_button_sendActionPerformed
+
+    private void my_files_permissionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_my_files_permissionMouseClicked
+        chargePermission();
+    }//GEN-LAST:event_my_files_permissionMouseClicked
+
+    private void user_permission_selectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_permission_selectorActionPerformed
+        chargePermission();
+    }//GEN-LAST:event_user_permission_selectorActionPerformed
+
+    private void my_files_permissionPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_my_files_permissionPropertyChange
+
+    }//GEN-LAST:event_my_files_permissionPropertyChange
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        savePermissionChange();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        String filename = files_selection_list.getSelectedItem().toString();
+        String[] columns = {"*"};
+        String[] conditions = {"name = \"" + filename + "\""};
+        ResultSet result = modelAction.select("poa", "file", columns, conditions);
+        String content = "";
+        String description = "";
+        int file = -1;
+        try {
+            if (result.first()) {
+                file = result.getInt("id");
+                if (result.getInt("autor") == idUser) {
+                    content = result.getString("content");
+                    text_editor.setEnabled(true);
+                }
+            }
+        } catch (SQLException ex) {
+        }
+        modelAction.close();
+        if (content.equals("") && file != 0) {
+            result = modelAction.customQuery("SELECT * \n"
+                    + "FROM poa.permission \n"
+                    + "            Inner Join poa.user ON poa.permission.user_id = poa.user.id\n"
+                    + "            Inner Join poa.file ON poa.permission.file_id= poa.file.id\n"
+                    + "where poa.permission.user_id = " + this.idUser + " and poa.permission.file_id = " + file);
+            try {
+                if (result.first()) {
+                    content = result.getString("content");
+                    description = result.getString("description");
+                    if (description.contains("W")) {
+                        text_editor.setEnabled(true);
+                    } else {
+                        text_editor.setEnabled(false);
+                    }
+                }
+            } catch (SQLException ex) {
+            }
+            modelAction.close();
+        }
+        idOpenFile = file;
+        FileSystem currentFileBase = (FileSystem) xStream.fromXML(content);
+        ArrayList<Paragraph> paragraphBase = currentFileBase.getParagraphs();
+        if (!content.equals("")) {
+            String resultRTF = transformToRTF(paragraphBase);
+            this.text_editor.setText(resultRTF);
+        }
+        open_file_selector.setVisible(false);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    public void chargePermission() {
+        DefaultComboBoxModel modelActual = (DefaultComboBoxModel) user_permission_selector.getModel();
+        DefaultTableModel model = (DefaultTableModel) my_files_permission.getModel();
+        int row = my_files_permission.getSelectedRow();
+        if (row > -1) {
+            int file = Integer.parseInt(model.getValueAt(row, 0).toString());
+            String allName = modelActual.getSelectedItem().toString();
+            String[] params = allName.split(" ");
+            String[] conditionsUser = {"firstname = '" + params[0] + "'", "lastname = '" + params[1] + "'"};
+            String[] columnsUser = {"*"};
+            int idUserFile = 0;
+            ResultSet result = modelAction.select("poa", "user", columnsUser, conditionsUser);
+            try {
+                if (result.first()) {
+                    idUserFile = result.getInt("id");
+                }
+            } catch (SQLException ex) {
+            }
+            modelAction.close();
+
+            String[] conditionsPermise = {"file_id = '" + file + "'", "user_id = '" + idUserFile + "'"};
+            String[] columnsPermise = {"description"};
+            result = modelAction.select("poa", "permission", columnsPermise, conditionsPermise);
+            String description = "";
+            try {
+                if (result.first()) {
+                    description = result.getString("description");
+                }
+            } catch (SQLException ex) {
+            }
+            modelAction.close();
+            if (description.contains("R")) {
+                read_permission_value.setSelected(true);
+            } else {
+                read_permission_value.setSelected(false);
+            }
+            if (description.contains("W")) {
+                write_permission_value.setSelected(true);
+            } else {
+                write_permission_value.setSelected(false);
+            }
+        } else {
+            write_permission_value.setSelected(false);
+            read_permission_value.setSelected(false);
+        }
+    }
+
+    private void savePermissionChange() {
+        DefaultComboBoxModel modelActual = (DefaultComboBoxModel) user_permission_selector.getModel();
+        DefaultTableModel model = (DefaultTableModel) my_files_permission.getModel();
+        int row = my_files_permission.getSelectedRow();
+        if (row > -1) {
+            int file = Integer.parseInt(model.getValueAt(row, 0).toString());
+            String allName = modelActual.getSelectedItem().toString();
+            String[] params = allName.split(" ");
+            String[] conditionsUser = {"firstname = '" + params[0] + "'", "lastname = '" + params[1] + "'"};
+            String[] columnsUser = {"*"};
+            int idUserFile = 0;
+            ResultSet result = modelAction.select("poa", "user", columnsUser, conditionsUser);
+            try {
+                if (result.first()) {
+                    idUserFile = result.getInt("id");
+                }
+            } catch (SQLException ex) {
+            }
+            modelAction.close();
+
+            String[] conditionsPermise = {"file_id = '" + file + "'", "user_id = '" + idUserFile + "'"};
+            String[] columnsPermise = {"description"};
+            result = modelAction.select("poa", "permission", columnsPermise, conditionsPermise);
+            String description = "";
+            try {
+                if (result.first()) {
+                    description = result.getString("description");
+                }
+            } catch (SQLException ex) {
+            }
+            modelAction.close();
+            if (read_permission_value.isSelected()) {
+                description = "R";
+                if (write_permission_value.isSelected()) {
+                    description += "W";
+                }
+            }
+
+            String[] columnsP = {"file_id", "user_id", "description"};
+            String[] values = {"" + file, "" + idUserFile, description};
+
+            if (description.equals("")) {
+                modelAction.insert("poa", "permission", columnsP, values);
+                modelAction.close();
+                JOptionPane.showMessageDialog(this, "Se han creado los permisos");
+            } else {
+                modelAction.update("poa", "permission", columnsP, values, conditionsPermise);
+                modelAction.close();
+                JOptionPane.showMessageDialog(this, "Se han actualizado los permisos");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No selecciono el archivo o el usuario a realizar permiso");
+        }
+    }
 
     private static XStream getXstreamObject() {
-        XStream xstream = new XStream(new DomDriver()); // DomDriver and StaxDriver instances also can be used with constructor
-        xstream
-                .alias("file", FileSystem.class
-                ); // this will remove the Country class package name
-        xstream
-                .alias("block", Paragraph.class
-                ); // this will remove the State class package na
-        xstream
-                .addImplicitCollection(FileSystem.class, "paragraphs"); // don't want all states inside .
+        XStream xstream = new XStream(new DomDriver());
+        xstream.alias("file", FileSystem.class);
+        xstream.alias("block", Paragraph.class);
+        xstream.addImplicitCollection(FileSystem.class, "paragraphs");
         return xstream;
     }
 
@@ -1430,19 +1938,23 @@ public class AppView extends JFrame {
     private javax.swing.JButton export_button_to_rtf;
     private javax.swing.JButton export_word_button;
     private javax.swing.JButton file_save_action;
-    private com.toedter.calendar.JDateChooser file_save_date;
     private javax.swing.JTextField file_save_directory;
     private javax.swing.JTextField file_save_name;
+    private javax.swing.JSpinner file_size_save;
+    private javax.swing.JComboBox<String> files_selection_list;
+    private javax.swing.JComboBox<String> files_selection_list1;
     private javax.swing.JComboBox<String> font_size_combo;
     private javax.swing.JComboBox<String> fonts_combo;
     private javax.swing.JButton historial_editor_button;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton19;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
-    private javax.swing.JButton jButton21;
     private javax.swing.JButton jButton22;
     private javax.swing.JButton jButton23;
     private javax.swing.JButton jButton25;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1451,7 +1963,15 @@ public class AppView extends JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1462,6 +1982,7 @@ public class AppView extends JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JButton justify_button_align;
@@ -1471,15 +1992,21 @@ public class AppView extends JFrame {
     private javax.swing.JPanel menu_insert_wrapper;
     private javax.swing.JPanel menu_insert_wrapper1;
     private javax.swing.JTabbedPane menu_sidebar;
+    private javax.swing.JTable my_files_permission;
+    private javax.swing.JDialog open_file_selector;
+    private javax.swing.JButton open_file_show;
+    private javax.swing.JDialog permission_window;
     private javax.swing.JPanel port_papel_wrapper;
     private javax.swing.JPanel port_papel_wrapper1;
     private javax.swing.JPanel port_papel_wrapper2;
     private javax.swing.JPanel port_papel_wrapper3;
+    private javax.swing.JCheckBox read_permission_value;
     private javax.swing.JButton redo_button_editor;
     private javax.swing.JButton right_button_align;
     private javax.swing.JTextField rtf_export_name;
     private javax.swing.JDialog save_file_export;
     private javax.swing.JDialog save_file_win;
+    private javax.swing.JDialog send_file_window;
     private javax.swing.JButton size_minus_button;
     private javax.swing.JButton size_pluss_button;
     private javax.swing.JTextPane text_editor;
@@ -1487,6 +2014,8 @@ public class AppView extends JFrame {
     private javax.swing.JTextField ttf_username;
     private javax.swing.JButton underline_button_editor;
     private javax.swing.JButton undo_button_editor;
+    private javax.swing.JComboBox<String> user_permission_selector;
+    private javax.swing.JCheckBox write_permission_value;
     // End of variables declaration//GEN-END:variables
     StyledDocument doc;
     Document documento;

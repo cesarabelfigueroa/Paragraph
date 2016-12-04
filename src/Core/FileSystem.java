@@ -19,16 +19,26 @@ public class FileSystem {
     private String name;
     private String directory;
     private int autor;
+    private int size;
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
     private ArrayList<Paragraph> paragraphs = new ArrayList();
 
     public FileSystem() {
 
     }
 
-    public FileSystem(String name, String directory, int autor) {
+    public FileSystem(String name, String directory, int autor, int size) {
         this.name = name;
         this.directory = directory;
         this.autor = autor;
+        this.size = size;
     }
 
     /**

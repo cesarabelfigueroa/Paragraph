@@ -22,7 +22,7 @@ public class ThreadRelay implements Runnable {
             } catch (InterruptedException ex) {
                 Logger.getLogger(ThreadRelay.class.getName()).log(Level.SEVERE, null, ex);
             }
-           form.autoReadFile();
+            form.autoReadFile();
         }
     }
 
