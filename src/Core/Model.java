@@ -129,6 +129,7 @@ public class Model {
         try {
             Statement sentence = connect().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             response = sentence.executeQuery(query);
+
         } catch (SQLException ex) {
             Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex);
         }
