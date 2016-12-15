@@ -5,7 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 
-public class ThreadRelay implements Runnable {
+public class ThreadRelay extends Thread {
 
     boolean active = true;
     AppView form;
@@ -19,10 +19,11 @@ public class ThreadRelay implements Runnable {
         while (true) {
             try {
                 Thread.sleep(5000);
+                form.autoSaveFile();
             } catch (InterruptedException ex) {
                 Logger.getLogger(ThreadRelay.class.getName()).log(Level.SEVERE, null, ex);
             }
-            form.autoReadFile();
+            form.autoSaveFile();
         }
     }
 

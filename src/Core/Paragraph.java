@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Paragraph implements Serializable {
 
     private String content = "";
+    private int editor = -1;
 
     public Paragraph() {
     }
@@ -32,6 +33,14 @@ public class Paragraph implements Serializable {
         return new StringBuilder()
                 .append("content:").append(content)
                 .toString();
+    }
+
+    public int getEditor() {
+        return editor;
+    }
+
+    public void setEditor(int editor) {
+        this.editor = editor;
     }
 
 }

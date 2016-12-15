@@ -91,7 +91,6 @@ public class AppView extends JFrame {
     public void setWindowsConfiguration() {
         AppView.setDefaultLookAndFeelDecorated(false);
         this.setLocationRelativeTo(null);
-
         this.pack();
         this.repaint();
         // this.setExtendedState(MAXIMIZED_BOTH);
@@ -233,6 +232,7 @@ public class AppView extends JFrame {
         menu_table = new javax.swing.JPopupMenu();
         order_by_size = new javax.swing.JMenuItem();
         order_by_directory = new javax.swing.JMenuItem();
+        send_ftp_item = new javax.swing.JMenuItem();
         button_editor = new javax.swing.JButton();
         button_files = new javax.swing.JButton();
         button_auth = new javax.swing.JButton();
@@ -566,7 +566,7 @@ public class AppView extends JFrame {
                 .addContainerGap()
                 .addGroup(menu_insert_wrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(port_papel_wrapper, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                    .addComponent(port_papel_wrapper, javax.swing.GroupLayout.PREFERRED_SIZE, 190, Short.MAX_VALUE)
                     .addComponent(port_papel_wrapper1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -1315,6 +1315,14 @@ public class AppView extends JFrame {
         });
         menu_table.add(order_by_directory);
 
+        send_ftp_item.setText("Enviar por ftp");
+        send_ftp_item.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                send_ftp_itemActionPerformed(evt);
+            }
+        });
+        menu_table.add(send_ftp_item);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(204, 204, 204));
 
@@ -1385,11 +1393,12 @@ public class AppView extends JFrame {
 
     private void button_editorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_editorActionPerformed
         this.setVisible(false);
-
         historial("ha abierto el editor", "");
         editorForm.pack();
         editorForm.setLocationRelativeTo(this);
-        //  editorForm.setExtendedState(MAXIMIZED_BOTH);
+        //editorForm.setExtendedState(MAXIMIZED_BOTH);
+        Thread relay = new ThreadRelay(this);
+        relay.start();
         editorForm.setVisible(true);
     }//GEN-LAST:event_button_editorActionPerformed
 
@@ -1514,7 +1523,7 @@ public class AppView extends JFrame {
 
     private void exportRTF() {
         try {
-            String content = getContentText();
+            String content = getRTFContentText();
             String name = this.rtf_export_name.getText();
             String rute = "./files/example.rtf";
             if (!name.equals("")) {
@@ -1561,11 +1570,21 @@ public class AppView extends JFrame {
         }
     }
 
-    private String getContentText() {
+    private String getPlaineContentText() {
+        try {
+            return text_editor.getDocument().getText(0, text_editor.getDocument().getLength());
+        } catch (BadLocationException ex) {
+            Logger.getLogger(AppView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return "";
+    }
+
+    private String getRTFContentText() {
         try {
             ByteArrayOutputStream str = new ByteArrayOutputStream();
             RTFEditorKit kitrtf = new RTFEditorKit();
-            kitrtf.write(str, text_editor.getDocument(), 0, text_editor.getDocument().getLength() - 1);
+            kitrtf.write(str, text_editor.getDocument(), 0, text_editor.getDocument().getLength());
             return str.toString();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(AppView.class.getName()).log(Level.SEVERE, null, ex);
@@ -1678,61 +1697,85 @@ public class AppView extends JFrame {
             } catch (SQLException ex) {
             }
             modelAction.close();
+
             if (!content.equals("")) {
                 FileSystem contentFile = (FileSystem) xStream.fromXML(content);
-                ArrayList<Paragraph> Paragraphs = getContent();
-                contentFile.setParagraphs(Paragraphs);
+                ArrayList<Paragraph> oldParagraphs = contentFile.getParagraphs();
+                ArrayList<Paragraph> newParagraphs = getContent();
+                int number = getEditedParagrapth(newParagraphs, oldParagraphs);
+                System.out.println("editar " + number);
+                if (number != -1 && !isBlocked(oldParagraphs, number)) {
+                    clearBlock(oldParagraphs, number);
+                    if (number != -1) {
+                        oldParagraphs.get(number).setContent(newParagraphs.get(number).getContent());
+                        oldParagraphs.get(number).setEditor(idUser);
+                    }
+                }
+
                 String xml = xStream.toXML(contentFile);
                 String[] values = {xml};
                 String[] columnsFile = {"content"};
                 String[] conditionsFile = {"id = " + idOpenFile};
                 modelAction.update("poa", "file", columnsFile, values, conditionsFile);
                 modelAction.close();
-                historial("ha guardado el archivo", filename);
             }
-        }
-    }
 
-    public void autoReadFile() {
-        if (this.idOpenFile != -1) {
-            String[] columns = {"*"};
-            String[] conditions = {"id = \"" + idOpenFile + "\""};
-            ResultSet result = modelAction.select("poa", "file", columns, conditions);
-            String content = "";
+            String[] columns2 = {"*"};
+            String[] conditions2 = {"id = \"" + idOpenFile + "\""};
+            ResultSet result2 = modelAction.select("poa", "file", columns2, conditions2);
+            String content2 = "";
             try {
-                if (result.first()) {
-                    content = result.getString("content");
+                if (result2.first()) {
+                    content2 = result2.getString("content");
+                    FileSystem contentFile = (FileSystem) xStream.fromXML(content2);
+                    String resultRTF = transformToRTF(contentFile.getParagraphs());
+                    this.text_editor.setText(resultRTF);
                 }
             } catch (SQLException ex) {
             }
             modelAction.close();
-            FileSystem currentFileBase = (FileSystem) xStream.fromXML(content);
-            ArrayList<Paragraph> paragraphBase = currentFileBase.getParagraphs();
-            if (!content.equals("")) {
-                String resultRTF = transformToRTF(paragraphBase);
-                this.text_editor.setText(resultRTF);
+        }
+    }
+
+    public int getEditedParagrapth(ArrayList<Paragraph> newParagraphs, ArrayList<Paragraph> oldParagraphs) {
+        for (int i = 0; i < oldParagraphs.size(); i++) {
+            if (i < newParagraphs.size()) {
+                if (!oldParagraphs.get(i).getContent().equals(newParagraphs.get(i).getContent())) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public void clearBlock(ArrayList<Paragraph> oldParagraphs, int number) {
+        for (int i = 0; i < oldParagraphs.size(); i++) {
+            if (oldParagraphs.get(i).getEditor() != number && oldParagraphs.get(i).getEditor() == idUser) {
+                oldParagraphs.get(i).setEditor(-1);
             }
         }
     }
 
+    public boolean isBlocked(ArrayList<Paragraph> oldParagraphs, int number) {
+        if (oldParagraphs.get(number).getEditor() != -1 && oldParagraphs.get(number).getEditor() != idUser) {
+            return true;
+        }
+        return false;
+    }
+
     private String transformToRTF(ArrayList<Paragraph> Paragraph) {
-        ArrayList<String> contents = new ArrayList();
+        String rtf = "{\\rtf1\\ansi\n"
+                + "{\\fonttbl\\f0\\fnil Monospaced;\\f1\\fnil Segoe UI;}\n"
+                + "{\\colortbl\\red0\\green0\\blue0;\\red34\\green34\\blue34;}\n"
+                + "\n"
+                + "\\f1\\fs24\\i0\\b0\\cf1 ";
         for (int i = 0; i < Paragraph.size(); i++) {
-            contents.add(Paragraph.get(i).getContent());
+            rtf += Paragraph.get(i).getContent();
+            rtf += "\\";
+            rtf += "par \n";
         }
-        String rtf = "";
-        for (int i = 0; i < contents.size(); i++) {
-            if (!(contents.get(i).equals("/n") || contents.get(i).equals("") || contents.get(i).equals(" "))) {
-                rtf += contents.get(i);
-            }
-            if (i < contents.size() - 1) {
-                if (!(rtf.equals("/n") || rtf.equals("") || rtf.equals(" "))) {
-                    rtf += "/par ";
-                }
-            }
-        }
-        String result = rtf.replace('/', '\\');
-        return result;
+        rtf += "}";
+        return rtf;
     }
 
     private FileSystem getNewFile() {
@@ -1747,12 +1790,11 @@ public class AppView extends JFrame {
 
     private ArrayList<Paragraph> getContent() {
         ArrayList<Paragraph> paragraphsContent = new ArrayList();
-        String content = getContentText();
-        String scape = "\\\\";
-        content = content.replace('\\', '/');
-        String[] paragraphs = content.split("/par ");
+        String content = this.getPlaineContentText();
+        String[] paragraphs = content.split("\n");
         for (int i = 0; i < paragraphs.length; i++) {
-            paragraphsContent.add(new Paragraph(paragraphs[i]));
+            Paragraph line = new Paragraph(paragraphs[i]);
+            paragraphsContent.add(line);
         }
         return paragraphsContent;
     }
@@ -2046,6 +2088,29 @@ public class AppView extends JFrame {
             Logger.getLogger(AppView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_export_excel_buttonActionPerformed
+
+    private void send_ftp_itemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_send_ftp_itemActionPerformed
+        DefaultTableModel model = (DefaultTableModel) report_table.getModel();
+        if (report_table.getSelectedRow() > -1) {
+            String content = model.getValueAt(report_table.getSelectedRow(), 4).toString();
+            String name = model.getValueAt(report_table.getSelectedRow(), 1).toString();
+            String rute = "./exports/" + name + ".xml";
+            File file = new File(rute);
+            BufferedWriter bw = null;
+            try {
+                bw = new BufferedWriter(new FileWriter(file));
+                bw.write(content);
+                bw.close();
+            } catch (IOException ex) {
+                Logger.getLogger(AppView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            FTPClientExample example = new FTPClientExample(rute);
+            example.conect();
+            JOptionPane.showMessageDialog(editorForm, "Se ha enviado el archivo");
+
+        }
+    }//GEN-LAST:event_send_ftp_itemActionPerformed
 
     public void chargePermission() {
         DefaultComboBoxModel modelActual = (DefaultComboBoxModel) user_permission_selector.getModel();
@@ -2418,6 +2483,7 @@ public class AppView extends JFrame {
     private javax.swing.JDialog save_file_export_xml;
     private javax.swing.JDialog save_file_win;
     private javax.swing.JDialog send_file_window;
+    private javax.swing.JMenuItem send_ftp_item;
     private javax.swing.JButton size_minus_button;
     private javax.swing.JButton size_pluss_button;
     private javax.swing.JTextPane text_editor;
