@@ -163,7 +163,6 @@ public class AppView extends JFrame {
         jLabel4 = new javax.swing.JLabel();
         jButton23 = new javax.swing.JButton();
         export_word_button = new javax.swing.JButton();
-        jButton25 = new javax.swing.JButton();
         historial_editor_button = new javax.swing.JButton();
         port_papel_wrapper3 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
@@ -238,6 +237,7 @@ public class AppView extends JFrame {
         button_auth = new javax.swing.JButton();
         button_editor_files = new javax.swing.JButton();
 
+        editorForm.setTitle("Editor");
         editorForm.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentHidden(java.awt.event.ComponentEvent evt) {
                 editorFormComponentHidden(evt);
@@ -566,7 +566,7 @@ public class AppView extends JFrame {
                 .addContainerGap()
                 .addGroup(menu_insert_wrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(port_papel_wrapper, javax.swing.GroupLayout.PREFERRED_SIZE, 190, Short.MAX_VALUE)
+                    .addComponent(port_papel_wrapper, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
                     .addComponent(port_papel_wrapper1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -596,10 +596,6 @@ public class AppView extends JFrame {
             }
         });
 
-        jButton25.setForeground(new java.awt.Color(255, 255, 255));
-        jButton25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Refresh-52.png"))); // NOI18N
-        jButton25.setToolTipText("Actualizar");
-
         historial_editor_button.setForeground(new java.awt.Color(255, 255, 255));
         historial_editor_button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Clock Filled-50.png"))); // NOI18N
         historial_editor_button.setToolTipText("Historial de Acciones");
@@ -623,11 +619,9 @@ public class AppView extends JFrame {
                         .addComponent(jButton23)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(export_word_button)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton25)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(historial_editor_button)))
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addContainerGap(98, Short.MAX_VALUE))
         );
         port_papel_wrapper2Layout.setVerticalGroup(
             port_papel_wrapper2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -636,7 +630,6 @@ public class AppView extends JFrame {
                 .addGroup(port_papel_wrapper2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton23, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(export_word_button, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton25, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(historial_editor_button, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
                 .addComponent(jLabel4)
@@ -738,6 +731,8 @@ public class AppView extends JFrame {
                 .addContainerGap())
         );
 
+        editor_log_win.setTitle("Historial");
+
         jLabel7.setFont(new java.awt.Font("Tekton Pro", 0, 18)); // NOI18N
         jLabel7.setText("Historial de Acciones");
 
@@ -795,6 +790,8 @@ public class AppView extends JFrame {
                 .addGap(31, 31, 31))
         );
 
+        save_file_win.setTitle("Guardar");
+
         file_save_action.setText("Aceptar");
         file_save_action.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -851,6 +848,7 @@ public class AppView extends JFrame {
                 .addContainerGap())
         );
 
+        log_window.setTitle("Sesión");
         log_window.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 log_windowKeyPressed(evt);
@@ -923,6 +921,8 @@ public class AppView extends JFrame {
                 .addGap(33, 33, 33))
         );
 
+        save_file_export.setTitle("Exportar");
+
         export_button_to_rtf.setText("Aceptar");
         export_button_to_rtf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -970,6 +970,8 @@ public class AppView extends JFrame {
                 .addGap(28, 28, 28))
         );
 
+        open_file_selector.setTitle("Abrir");
+
         jLabel16.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel16.setText("Seleccionar Archivo");
 
@@ -1016,6 +1018,8 @@ public class AppView extends JFrame {
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28))
         );
+
+        permission_window.setTitle("Permisos");
 
         jLabel18.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel18.setText("Asignar Permisos");
@@ -1130,6 +1134,8 @@ public class AppView extends JFrame {
                 .addGap(21, 21, 21))
         );
 
+        send_file_window.setTitle("Enviar");
+
         jLabel22.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel22.setText("Enviar Archivo");
 
@@ -1168,6 +1174,8 @@ public class AppView extends JFrame {
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26))
         );
+
+        save_file_export_xml.setTitle("Exportar");
 
         export_button_to_rtf1.setText("Aceptar");
         export_button_to_rtf1.addActionListener(new java.awt.event.ActionListener() {
@@ -1214,6 +1222,8 @@ public class AppView extends JFrame {
                 .addComponent(export_button_to_rtf1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(37, 37, 37))
         );
+
+        all_files_content.setTitle("Archivos");
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Mis Archivos");
         my_files_tree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
@@ -1324,6 +1334,7 @@ public class AppView extends JFrame {
         menu_table.add(send_ftp_item);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Paragraph");
         setBackground(new java.awt.Color(204, 204, 204));
 
         button_editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/editor.png"))); // NOI18N
@@ -1602,7 +1613,7 @@ public class AppView extends JFrame {
             save_file_win.setLocationRelativeTo(editorForm);
             save_file_win.setVisible(true);
         } else {
-            this.autoSaveFile();
+            this.autoSaveFile(false);
         }
     }//GEN-LAST:event_jButton20ActionPerformed
 
@@ -1681,7 +1692,7 @@ public class AppView extends JFrame {
         }
     }//GEN-LAST:event_file_save_actionActionPerformed
 
-    public void autoSaveFile() {
+    public void autoSaveFile(boolean exit) {
         if (this.idOpenFile != -1) {
             ArrayList<Paragraph> currents = getContent();
             String[] columns = {"*"};
@@ -1697,19 +1708,33 @@ public class AppView extends JFrame {
             } catch (SQLException ex) {
             }
             modelAction.close();
-
             if (!content.equals("")) {
                 FileSystem contentFile = (FileSystem) xStream.fromXML(content);
                 ArrayList<Paragraph> oldParagraphs = contentFile.getParagraphs();
                 ArrayList<Paragraph> newParagraphs = getContent();
-                int number = getEditedParagrapth(newParagraphs, oldParagraphs);
-                System.out.println("editar " + number);
-                if (number != -1 && !isBlocked(oldParagraphs, number)) {
-                    clearBlock(oldParagraphs, number);
-                    if (number != -1) {
-                        oldParagraphs.get(number).setContent(newParagraphs.get(number).getContent());
-                        oldParagraphs.get(number).setEditor(idUser);
+                if (!exit) {
+                    int number = getEditedParagrapth(newParagraphs, oldParagraphs);
+                    if (number != -1 && !isBlocked(oldParagraphs, number)) {
+                        clearBlock(oldParagraphs, number);
+                        if (number != -1) {
+                            oldParagraphs.get(number).setContent(newParagraphs.get(number).getContent());
+                            oldParagraphs.get(number).setEditor(idUser);
+                        }
+                    } else if (number != -1) {
+                        int anotherChange = this.isAnotherChange(newParagraphs, oldParagraphs, number);
+                        if (anotherChange != -1) {
+                            if (!isBlocked(oldParagraphs, anotherChange)) {
+                                clearBlock(oldParagraphs, anotherChange);
+                                oldParagraphs.get(anotherChange).setContent(newParagraphs.get(number).getContent());
+                                oldParagraphs.get(anotherChange).setEditor(idUser);
+                            }
+                        }
+                        /* JOptionPane.showMessageDialog(editorForm, "Existe un cambio en una linea que alguien más edita."
+                                + " \n Sus cambios serán omitidos "
+                                + "\n Línea Bloqueada.");*/
                     }
+                } else {
+                    clearBlock(oldParagraphs, -1);
                 }
 
                 String xml = xStream.toXML(contentFile);
@@ -1728,8 +1753,14 @@ public class AppView extends JFrame {
                 if (result2.first()) {
                     content2 = result2.getString("content");
                     FileSystem contentFile = (FileSystem) xStream.fromXML(content2);
+                    int cursor = text_editor.getCaretPosition();
                     String resultRTF = transformToRTF(contentFile.getParagraphs());
                     this.text_editor.setText(resultRTF);
+                    try {
+                        text_editor.setCaretPosition(cursor);
+                    } catch (Exception ex) {
+
+                    }
                 }
             } catch (SQLException ex) {
             }
@@ -1739,6 +1770,17 @@ public class AppView extends JFrame {
 
     public int getEditedParagrapth(ArrayList<Paragraph> newParagraphs, ArrayList<Paragraph> oldParagraphs) {
         for (int i = 0; i < oldParagraphs.size(); i++) {
+            if (i < newParagraphs.size()) {
+                if (!oldParagraphs.get(i).getContent().equals(newParagraphs.get(i).getContent())) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public int isAnotherChange(ArrayList<Paragraph> newParagraphs, ArrayList<Paragraph> oldParagraphs, int init) {
+        for (int i = init; i < oldParagraphs.size(); i++) {
             if (i < newParagraphs.size()) {
                 if (!oldParagraphs.get(i).getContent().equals(newParagraphs.get(i).getContent())) {
                     return i;
@@ -1856,18 +1898,13 @@ public class AppView extends JFrame {
     private void editorFormComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_editorFormComponentHidden
         if (!editorForm.isVisible()) {
             this.setVisible(true);
-            int confirm = JOptionPane.showConfirmDialog(editorForm, "¿Desea guardar su archivo?", "", JOptionPane.YES_NO_OPTION);
-            if (confirm == 0) {
-                if (idOpenFile == -1) {
-                    save_file_win.pack();
-                    save_file_win.setLocationRelativeTo(editorForm);
-                    save_file_win.setVisible(true);
-
-                } else {
-                    this.autoSaveFile();
-                }
+            if (idOpenFile == -1) {
+                save_file_win.pack();
+                save_file_win.setLocationRelativeTo(editorForm);
+                save_file_win.setVisible(true);
+            } else {
+                this.autoSaveFile(true);
             }
-
             this.text_editor.setText("");
             this.idOpenFile = -1;
         }
@@ -2105,10 +2142,8 @@ public class AppView extends JFrame {
                 Logger.getLogger(AppView.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            FTPClientExample example = new FTPClientExample(rute);
-            example.conect();
-            JOptionPane.showMessageDialog(editorForm, "Se ha enviado el archivo");
-
+            Thread ftp = new FTPClientExample(rute);
+            ftp.start();
         }
     }//GEN-LAST:event_send_ftp_itemActionPerformed
 
@@ -2416,7 +2451,6 @@ public class AppView extends JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton23;
-    private javax.swing.JButton jButton25;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton7;

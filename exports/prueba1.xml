@@ -1,0 +1,18 @@
+<file>
+  <name>prueba1</name>
+  <directory>hehehe</directory>
+  <autor>1</autor>
+  <size>2</size>
+  <block>
+    <content>{/rtf1/ansi
+{/fonttbl/f0/fnil Monospaced;/f1/fnil Segoe UI;}
+{/colortbl/red0/green0/blue0;/red34/green34/blue34;}
+
+/li0/ri0/fi0/f1/fs24/i0/b/ul0/cf1 hehehehe/b0/par
+/b hwgjhwgehjwgwjhgwe/b0/par
+/par
+/li0/ri0/fi0/ul0/par
+}
+</content>
+  </block>
+</file>

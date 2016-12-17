@@ -3,6 +3,9 @@
 <Form version="1.7" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
     <Container class="javax.swing.JFrame" name="editorForm">
+      <Properties>
+        <Property name="title" type="java.lang.String" value="Editor"/>
+      </Properties>
       <Events>
         <EventHandler event="componentHidden" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="editorFormComponentHidden"/>
         <EventHandler event="componentShown" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="editorFormComponentShown"/>
@@ -590,13 +593,11 @@
                                       <Component id="jButton23" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="export_word_button" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jButton25" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Component id="historial_editor_button" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace pref="11" max="32767" attributes="0"/>
+                              <EmptySpace pref="98" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -607,7 +608,6 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jButton23" min="-2" pref="72" max="-2" attributes="0"/>
                                   <Component id="export_word_button" min="-2" pref="72" max="-2" attributes="0"/>
-                                  <Component id="jButton25" min="-2" pref="72" max="-2" attributes="0"/>
                                   <Component id="historial_editor_button" min="-2" pref="72" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace pref="62" max="32767" attributes="0"/>
@@ -653,17 +653,6 @@
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="export_word_buttonActionPerformed"/>
                       </Events>
-                    </Component>
-                    <Component class="javax.swing.JButton" name="jButton25">
-                      <Properties>
-                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                        </Property>
-                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/Icons/Refresh-52.png"/>
-                        </Property>
-                        <Property name="toolTipText" type="java.lang.String" value="Actualizar"/>
-                      </Properties>
                     </Component>
                     <Component class="javax.swing.JButton" name="historial_editor_button">
                       <Properties>
@@ -773,6 +762,9 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JDialog" name="editor_log_win">
+      <Properties>
+        <Property name="title" type="java.lang.String" value="Historial"/>
+      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -847,6 +839,9 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JDialog" name="save_file_win">
+      <Properties>
+        <Property name="title" type="java.lang.String" value="Guardar"/>
+      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -937,6 +932,9 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JDialog" name="log_window">
+      <Properties>
+        <Property name="title" type="java.lang.String" value="Sesi&#xf3;n"/>
+      </Properties>
       <Events>
         <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="log_windowKeyPressed"/>
       </Events>
@@ -1032,6 +1030,9 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JDialog" name="save_file_export">
+      <Properties>
+        <Property name="title" type="java.lang.String" value="Exportar"/>
+      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -1105,6 +1106,9 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JDialog" name="open_file_selector">
+      <Properties>
+        <Property name="title" type="java.lang.String" value="Abrir"/>
+      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -1186,6 +1190,9 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JDialog" name="permission_window">
+      <Properties>
+        <Property name="title" type="java.lang.String" value="Permisos"/>
+      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -1348,6 +1355,9 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JDialog" name="send_file_window">
+      <Properties>
+        <Property name="title" type="java.lang.String" value="Enviar"/>
+      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -1421,6 +1431,9 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JDialog" name="save_file_export_xml">
+      <Properties>
+        <Property name="title" type="java.lang.String" value="Exportar"/>
+      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -1493,6 +1506,9 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JDialog" name="all_files_content">
+      <Properties>
+        <Property name="title" type="java.lang.String" value="Archivos"/>
+      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -1662,6 +1678,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
+    <Property name="title" type="java.lang.String" value="Paragraph"/>
     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
       <Color blue="cc" green="cc" red="cc" type="rgb"/>
     </Property>
